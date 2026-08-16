@@ -1,0 +1,29 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_16-39-54.414995827_parallel_web_search_04b7d892.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_2972c5a65dd316607f10e367201d52a9",
+  "results": [
+    {
+      "url": "https://github.com/xitanggg/open-resume",
+      "title": "GitHub - xitanggg/open-resume: OpenResume is a powerful open-source resume builder and resume parser. https://open-resume.com/ · GitHub",
+      "publish_date": null,
+      "excerpts": [
+        "OpenResume is a powerful open-source resume builder and resume parser. The goal of OpenResume is to provide everyone with free access to a modern professional"
+      ]
+    },
+    {
+      "url": "https://arxiv.org/html/2402.06221v2",
+      "title": "ResumeFlow: An LLM-facilitated Pipeline for Personalized Resume Generation and Refinement",
+      "publish_date": null,
+      "excerpts": [
+        "... here contains instructions on how to craft the resume based on the job description in JobDetails . To do this we use best practices as highlighted by career counselors and professional resume writers as in (Advice, [[n. d.]](https://arxiv.org/htm"
+      ]
+    },
+    {
+      "url": "https://zylos.ai/en/research/2026-01-18-ai-resume-matching-candidate-analysis",
+      "title": "AI-Powered Candidate Matching and Resume Parsing 2026 | Zylos Research",
+      "publish_date": "2026-01-18",
+      "excerpts": [
+        "* Context-aware evaluation incorporating industry certifications, university rankings, company-specific criteria\n* 70% reduction in screening time while improving quality by 40%\n\n#### Resspar System\n\nThe Resspar (Resume Parser) system demonstrates cutting-edge LLM application:\n\n* Takes prompts/instructions and generates text corresponding to relevant information extracted from resume images\n* Leverages generative AI for dynamic information extraction\n* Adapts to varying resume formats without retraining\n\n### 1\\.3 Commercial LLM Parsers\n\n**Textkernel LLM Parser**\n\n* Human-like domain understanding at scale\n* 29+ language support with semantic parsing\n* OCR integration for image-based resumes\n* Enrichment with external data sources\n\n**RChilli LLM Parser**\n\n* AI-powered reading and comprehension\n* 40+ language support with deep learning\n* Rich taxonomy tagging (skills, certifications, education)\n* 2-day deployment vs. months of traditional engineering\n\n**Sensible + LLM Integration**\n\n* Combines layout-based parsing with LLM intelligence\n\n...\n\n* Recently acquired to create global leader\n\n### 3\\.4 Open-Source Alternatives\n\n#### OpenResume\n\n* **License** : Open-source\n* **Features** : Resume builder + parser, browser-based, privacy-first (data stays local)\n* **Best for** : Individual job seekers, privacy-conscious users\n* **GitHub** : <https://github.com/xitanggg/open-resume>\n\n#### Resume Matcher\n\n* **License** : Open-source\n* **Features** : Job description analysis, ATS keyword optimization, free AI-based customization\n* **Best for** : Candidates optimizing resumes for specific roles\n* **Website** : <https://resumematcher.fyi/>\n\n#### spaCy-Based Parsers\n\n* **Approach** : Custom NER models trained on resume corpora\n* **Entities** : SKILL, DEGREE, CERTIFICATION, COMPANY, DATE\n* **Performance** : 85-88% accuracy with domain-specific training\n* **Best for** : Organizations with ML expertise wanting full control\n\n**Example Repositories:**\n\n* DataTurks-Engg/Entity-Recognition-In-Resumes-SpaCy\n* Deep4GB/Resume-NLP-Parser\n* AjNavneet/Resume-Parser-Spacy-NER\n\n### 3\\.5 Market Trends\n\n...\n\n\"Existing AI regulations provide only indirect oversight of recruitment, failing to address the specific ethical risks of algorithmic hiring. The lack of mandatory mechanisms—such as bias audits, explainability requirements, and candidate appeals—leaves AI-driven HR practices largely unregulated.\"\n\nHowever, the EU AI Act is changing this landscape significantly (see Section 5.3).\n\n### 5\\.2 Accuracy and Quality Challenges\n\n#### Parsing Accuracy Issues\n\n**Layout Dependence:**\n\n* Creative resume designs confuse traditional parsers\n* M
+... [truncated]

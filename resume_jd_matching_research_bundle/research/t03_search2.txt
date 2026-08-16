@@ -1,0 +1,21 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_16-46-34.814752904_parallel_web_search_2c18736e.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_2487f70d5453255528cc3fde56b7a222",
+  "results": [
+    {
+      "url": "https://assets-eu.researchsquare.com/files/rs-3964944/v1_covered_0c29c38f-ede7-47a8-8216-26f1fb5bd66c.pdf",
+      "title": "",
+      "publish_date": null,
+      "excerpts": [
+        "Feature vectors are then extracted using OpenSMILE for audio and\n\nInception-ResNet-v2 for static images. Emotion classification into seven categories\n\n(angry, disgust, fear, happy, sad, surprise, and neutral) is performed using Support\n\nVector Machine (SVM) for audio, Inception-ResNet-v2 for static images, and the C3D\n\nand LSTM models for video sequences. The study notes challenges in training C3D\n\nmodels, resulting in overfitting and poor accuracy on the training dataset.\n\n3\n\n3 System Design\n\nFig. 1 : System diagram\n\n4\n\n4 Implementation\n\nThe project consists of 3 modules:\n\n4\\.1 RESUME ANALYSIS AND IMPROVEMENT\n\nIn the first module, the platform incorporates resume parsing and skill gap analysis.\n\nUsers can find any job on LinkedIn by pasting its Uniform Resource Locator (URL).\n\nThe job details, including the job description, can be retrieved through two methods:\n\na) Utilizing Selenium to automate the scraping process. This involves navigating\nto the LinkedIn page, identifying target Document Object Model (DOM) elements,\n\ncopying their XML Path Language (XPATH) from the browser’s inspect element, and\n\nforming a JavaScript Object Notation (JSON) object with the necessary fields.\n\nb) Leveraging the ProxyCurl LinkedIn Application Programming Interface (API)\n\nto fetch all required information directly from the LinkedIn job URL.\n\nTo determine the essential skills for the job, the platform employs NLP techniques.\n\nIt utilizes the transformers summarization pipeline to extract the crux of the job\n\ndescription and employs KeyBERT to extract crucial keywords. This approach facili-\n\ntates a comprehensive analysis of job requirements and aids users in understanding\n\nthe skills needed for specific positions.\n\nNote : Use MMR=true and a diversity of 0.4 is the preferred setting for the process.\n\nFig. 2 : Scraping API implementation\n\nResumes in PDF format are uploaded and stored in Firebase Storage. The platform\n\n...\n\nIt then generates the source vector representing the user answer and the\n\ntarget vector representing the target answer. By using the following formula the\n\ncosine similarity is calculated between the two vectors:-\n\ncsim = np.dot ( vecA, vecB ) / ( np.linalg.norm ( vecA ) ∗ np.linalg.norm ( vecB ))\n\nFig. 13 : Similarity between words\n\n12\n\n4\\.3 ONLINE ASSESSMENT GENERATION\n\nThe text is summarized using transformers’ summarization pipeline. Subsequently,\n\nKeyBERT is employed for keyword extraction. The context, comprising the summa-\n\nrized text, and keywords, representing the answers for that context, are provided to\n\na question generation model. This model is constructed using transformers’ encoding-\n\ndecoding architecture and is trained on the SQuAD [11] dataset. Currently, the model\n\nis trained on 8000 rows of the SQuAD dataset.\n\nFig. 14 : Transformers encoding-decoding structure\n\nA Transformer is a type of deep learning architecture that uses an attention mech-"
+      ]
+    },
+    {
+      "url": "https://blogs.avua.com/comparison/resume-score-vs-ats-score",
+      "title": "Resume Score vs ATS Score: What’s the Difference?",
+      "publish_date": "2026-03-13",
+      "excerpts": [
+        "A graphic designer might create a highly visual resume that **scores 10/10** for aesthetics but **0/10** on an **ATS checker** because the software treats the graphics as unreadable white space.\n\n**ATS resume readability** prioritizes hierarchy and text. To **ensure your resume** is readable, you often have to sacrifice unique design elements for standard formatting. This is the core conflict of **resume vs. ATS** : finding the balance where the document is clean enough to **pars
+... [truncated]

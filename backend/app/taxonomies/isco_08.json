@@ -1,0 +1,44 @@
+{
+  "major_groups": [
+    {
+      "code": "1",
+      "title": "Managers",
+      "subgroups": [
+        {"code": "12", "title": "Administrative and Commercial Managers", "examples": ["HR Director", "Marketing Manager", "Finance Manager", "Sales Director"]},
+        {"code": "13", "title": "Production and Specialized Services Managers", "examples": ["IT Manager", "Operations Manager", "Supply Chain Director", "Healthcare Administrator"]}
+      ]
+    },
+    {
+      "code": "2",
+      "title": "Professionals",
+      "subgroups": [
+        {"code": "21", "title": "Science and Engineering Professionals", "examples": ["Civil Engineer", "Mechanical Engineer", "Electrical Engineer", "Architect", "Research Scientist"]},
+        {"code": "22", "title": "Health Professionals", "examples": ["Medical Doctor", "Registered Nurse", "Pharmacist", "Clinical Specialist"]},
+        {"code": "24", "title": "Business and Administration Professionals", "examples": ["Accountant", "Financial Analyst", "Management Consultant", "Auditor"]},
+        {"code": "25", "title": "Information and Communications Technology Professionals", "examples": ["Software Engineer", "Frontend Developer", "Backend Engineer", "Data Scientist", "Data Analyst", "Machine Learning Engineer", "Cybersecurity Analyst", "DevOps Engineer", "System Architect", "UI/UX Designer", "Product Manager"]}
+      ]
+    },
+    {
+      "code": "3",
+      "title": "Technicians and Associate Professionals",
+      "subgroups": [
+        {"code": "31", "title": "Science and Engineering Associate Professionals", "examples": ["Drafter", "IT Support Specialist", "Network Technician"]},
+        {"code": "33", "title": "Business and Administration Associate Professionals", "examples": ["Bookkeeper", "Sales Representative", "Executive Assistant", "HR Specialist"]}
+      ]
+    },
+    {
+      "code": "4",
+      "title": "Clerical Support Workers",
+      "subgroups": [
+        {"code": "41", "title": "General and Keyboard Clerks", "examples": ["Customer Service Representative", "Data Entry Clerk", "Administrative Assistant"]}
+      ]
+    },
+    {
+      "code": "5",
+      "title": "Services and Sales Workers",
+      "subgroups": [
+        {"code": "52", "title": "Sales Workers", "examples": ["Account Executive", "Store Manager", "Customer Success Specialist"]}
+      ]
+    }
+  ]
+}

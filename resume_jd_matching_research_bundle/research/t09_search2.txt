@@ -1,0 +1,21 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_17-04-21.316108988_parallel_web_search_ca1ddf99.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_e8309a1c7e1e80c951e3ff4ca6c0f864",
+  "results": [
+    {
+      "url": "https://www.researchgate.net/publication/392101651_Transparency_and_Explainability_in_AI-Powered_Hiring_Tools_Building_Trust_in_Automated_Decisions",
+      "title": "(PDF) Transparency and Explainability in AI-Powered Hiring Tools: Building Trust in Automated Decisions",
+      "publish_date": "2025-05-26",
+      "excerpts": [
+        "Article PDF Available\nTransparency and Explainability in AI-Powered Hiring Tools: Building Trust in Automated Decisions\n    * May 2025\n\nAuthors:\nEmily Rose Sophie\n    * Obafemi Awolowo University\n\nDownload full-text PDF Read full-text\nDownload full-text PDF\nRead full-text\nDownload citation\nCopy link Link copied\nRead full-text Download citation\nCopy link Link copied\nReferences (16)\nAbstract\nArtificial Intelligence (AI) technologies are rapidly transforming recruitment by automating candidate screening, evaluation, and selection processes. While these AI-powered hiring tools enhance efficiency and reduce time-to-hire, they also introduce significant concerns regarding transparency and explainability. As AI models often operate as \"black boxes,\" stakeholders-particularly HR professionals and job applicants-struggle to understand how decisions are made.\n\n...\n\nAuthor content\nAll content in this area was uploaded by Emily Rose Sophie on May 26, 2025\nContent may be subject to copyright.\nTransparency and Explainability in AI-Powered Hiring Tools: Building Trust in\nAutomated Decisions Author: Emily Rose Sophie\nPublication Date: May, 2025\nAbstract Artificial Intelligence (AI) technologies are rapidly transforming recruitment by automating\ncandidate screening, evaluation, and selection processes. While these AI-powered hiring tools\nenhance efficiency and reduce time- to -hire, they also introduce significant concerns\nregarding transparency and explainability. As AI models often operate as \"black boxes,\"\nstakeholders — particularly HR professionals and job applicants — struggle to understand how\ndecisions are made. This lack of transparency undermines trust, poses ethical risks, and may\nconflict with regulatory requirements such as the GDPR and emerging AI governance laws.\n\n...\n\n2 Governance and Documentation Best practices include creating \"model cards\" and \"data sheets\" that document model\npurpose, inputs, performance metrics, and known limitations. These artifacts enhance\ntransparency and facilitate audits.\n7.3 Continuous Auditing Regular internal and third-party audits can identify bias and validate performance. This\nshould be a recurring process, especially as models retrain over time.\n7.4 User Education and Communication Training HR professionals and providing explanatory materials to candidates can enhance\ncomprehension and trust. Communicating decisions in plain language reduces anxiety and\nsupports fairness perceptions.\n8. Future Directions 8.1 Research Frontiers Emerging techniques in causal inference and counterfactual reasoning may enhance\nexplainability by showing how different inputs could change outcomes.\n8.2 Standardization and Certification Efforts are underway to create standardized benchmarks for explainability and\ntrustworthiness."
+      ]
+    },
+    {
+      "url": "https://www.converzai.com/candidate-trust-in-staffing",
+      "title": "Building candidate trust in an AI-driven staffing hiring",
+      "publish_date": "2025-12-09",
+      "excerpts": [
+        "For HR professionals and recruiters like you, prioritizing trust means focusing on empathy alongside efficiency. Solutions like [ConverzAI’s](https://converzai.com/) candidate engagement AI help by providing predictive insights that match candidates to roles accurately, reducing mismatches that erode confidence. Ultimately, trust translates to loyalty—candidates who feel valued are more likely to become repeat placements or even refer others, strengthening your long-term pipeline.\n\n|T
+... [truncated]

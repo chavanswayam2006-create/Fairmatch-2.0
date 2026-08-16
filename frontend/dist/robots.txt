@@ -1,0 +1,6 @@
+# Robots.txt for FairMatch AI
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://fairmatch.ai/sitemap.xml

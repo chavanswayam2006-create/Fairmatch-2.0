@@ -1,0 +1,29 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_16-46-23.234040500_parallel_web_search_8730665c.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_6e50114b0eaf6f4ab3d8ecc2ed393e0a",
+  "results": [
+    {
+      "url": "https://www.sciencedirect.com/science/article/pii/S1877050926018041",
+      "title": "Nexus: A Multi-Modal Framework for Semantic Job Matching and AI-Driven Resume Analysis - ScienceDirect",
+      "publish_date": "2026-01-01",
+      "excerpts": [
+        "Our main contributions are threefold: (1) a high-fidelity hybrid parsing engine which blends structured text extraction with an Optical Character Recognition (OCR) fallback for high-quality data capture across varying resume layouts; (2) a dual-model semantic matching technique that employs both BERT and Sentence-BERT to extract contextually meaningful job postings, transcending mere keyword matching; and (3) a new structured-prompting method for Large Language Models (LLMs) to present candidates with actionable, expert-level feedback and an Applicant Tracking System (ATS) compatibility score. By consistently transforming unstructured resume information into usable insights, Nexus offers a more accurate and efficient means of matching talent to opportunity. Our evaluation demonstrates that the framework not only delivers highly relevant job recommendations but also equips candidates with data-driven, customized tips for profile enhancement."
+      ]
+    },
+    {
+      "url": "https://maartengr.github.io/KeyBERT/index.html",
+      "title": "KeyBERT",
+      "publish_date": null,
+      "excerpts": [
+        "logo\n\nKeyBERT\n\nHome\n\nInitializing search\n\nTable of contents\n\n# **KeyBERT** ¶\n\nKeyBERT is a minimal and easy-to-use keyword extraction technique that leverages BERT embeddings to\ncreate keywords and keyphrases that are most similar to a document.\n\n## **About the Project** ¶\n\nAlthough there are already many methods available for keyword generation\n(e.g., [Rake](https://github.com/aneesha/RAKE) , [YAKE!](https://github.com/LIAAD/yake) , TF-IDF, etc.)\nI wanted to create a very basic, but powerful method for extracting keywords and keyphrases.\nThis is where **KeyBERT** comes in! Which uses BERT-embeddings and simple cosine similarity\nto find the sub-phrases in a document that are the most similar to the document itself.\n\nFirst, document embeddings are extracted with BERT to get a document-level representation.\nThen, word embeddings are extracted for N-gram words/phrases. Finally, we use cosine similarity\nto find the words/phrases that are the most similar to the document."
+      ]
+    },
+    {
+      "url": "https://human.spbstu.ru/en/article/2022.50.02",
+      "title": "Experiments on automatic keyphrase extraction in stylistically heterogeneous corpus of Russian texts | Terra Linguistica",
+      "publish_date": null,
+      "excerpts": [
+        "Experiments on automatic selection of keyphrases are carried out using nine algorithms of various types, including statistical (Log-Likelihood, TF-IDF, Chi-square), hybrid, also called linguostatistical (RAKE, YAKE, PullEnti, Topia), structural, also called graph-based (TextRank), and machine learning (KeyBERT). In the course of the study a mixed corpus was prepared of about 1 million tokens in size, including 50 social media texts (news reports with headlines), 50 scientific texts (articles on computational linguistics with titles, abstracts and manually specified sets of key expressions), 50 literary texts (chapters from prose works, provided with the author’s description of the content). Evaluation procedure implies comparison of keyphrases selected by experts from the first segment of texts and key expressions automatically extracted from the second segment.\nA quantitative assessment of the matches between expert and automatic markup made it possible to confirm the hypothesis on a different concentration of keyphrases in text segments involved in comparison. The study of lexico-grammatical and semantic features of keyphrases allowed us to reveal features that are determined by text style. The results of the study m
+... [truncated]

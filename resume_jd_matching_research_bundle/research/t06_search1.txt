@@ -1,0 +1,37 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_16-54-15.420058975_parallel_web_search_ca9e142f.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_b886bcc7490fb708189b4888da505be9",
+  "results": [
+    {
+      "url": "https://mljourney.com/fairness-metrics-for-machine-learning-demographic-parity-vs-equal-opportunity",
+      "title": "Fairness Metrics for Machine Learning: Demographic Parity vs Equal Opportunity - ML Journey",
+      "publish_date": null,
+      "excerpts": [
+        "... Demographic Parity and Equal Opportunity represents one of the most fundamental decisions in building fair machine learning systems. While Demographic Parity offers simplicity and direct representation, Equal Opportunity provides a more nuanced a"
+      ]
+    },
+    {
+      "url": "https://www.semanticscholar.org/paper/072ffcf3840f5bf151bcd5e6a758681642431a19",
+      "title": "A Comprehensive Review of AI Techniques for Addressing Algorithmic Bias in Job Hiring | Semantic Scholar",
+      "publish_date": "2024-02-07",
+      "excerpts": [
+        "name=Path%20of%20Science)\n\n* 2025\n\nTLDR\n\nThe study looks into how artificial intelligence affects hiring procedures, focusing on the fairness of the algorithms that drive these tools, and discusses the origins of algorithmic bias, including biased training records, defining labels, and choosing features, and suggests debiasing methods. Expand\n\n* 6\n\nSave\n\n### The Algorithmic Turn in Talent Acquisition: A Critical Analysis of AI-Mediated Recruitment Technologies\n\nSimbiat Saliu\n\nComputer Science, Business\n\nTLDR\n\nThe need for human oversight, ethical AI frameworks, and regulatory collaboration to balance automation with fairness is highlighted, as AI-driven recruitment continues to evolve, ensuring compliance with ethical and legal standards will be critical for sustainable and inclusive hiring practices. Expand\n\n* PDF\n\n* 1 Excerpt\n\nSave\n\n### The Voice of Creative Research\n\nN. Niroula P. Sharma\n\nBusiness, Computer Science\n\nTLDR\n\n...\n\nThe study analyzes that AI plays an important role in each stage of recruitment, such as recruitment promotion, job search, application, screening, assessment, and coordination and suggests that managers need to be concerned about the cost of AI recruitment, legal privacy, recruitment bias, and the possibility of replacing recruiters. Expand\n\n* 121\n* PDF\n\nSave\n\n### AI for hiring in context: a perspective on overcoming the unique challenges of employment research to mitigate disparate impact\n\nSara Kassir Lewis Baker J. Dolphin Frida Polli\n\nComputer Science, Sociology\n\n[AI and Ethics](https://www.semanticscholar.org/venue?name=AI%20and%20Ethics)\n\n* 2022\n\nTLDR\n\nThis paper examines the utility of ML for conducting exploratory analyses, coupled with the back-testing capability offered by advances in data science, and explains modern technology’s utility for hiring. Expand\n\n* 32\n* PDF\n\nSave\n\n### Pitfalls of Machine Learning-Based Personnel Selection\n\nD. Goretzko Laura Sophia Finja Israel"
+      ]
+    },
+    {
+      "url": "https://hbr.org/2025/12/new-research-on-ai-and-fairness-in-hiring",
+      "title": "New Research on AI and Fairness in Hiring",
+      "publish_date": "2025-12-12",
+      "excerpts": [
+        "<strong>AI promises to make hiring fairer by reducing human bias, yet it often reshapes what fairness means—and locks in one definition</strong>. A three-year study of a global consumer-goods firm found that their algorithmic system privileged a rigid definition"
+      ]
+    },
+    {
+      "url": "https://redresscompliance.com/amazon-ai-hiring-tool-a-case-study-in-algorithmic-bias",
+      "title": "Amazon AI Hiring Tool: A Case Study in Algorithmic Bias",
+      "publish_date": "2025-01-29",
+      "excerpts": [
+        "Skip to content\n\nLocations\n\nResources\n\nCareers\n\nContact\n\nContact us\n\n[](https://www.facebook.com/Redresscompliance/) [](https://twitter.com/redrcompliance/) [](https://www.linkedin.com/company/oraclelicenseexpert/) [](https://www.youtube.com/c/redresscompliance/)\n\n[ai](https://redresscompliance.com/categ
+... [truncated]

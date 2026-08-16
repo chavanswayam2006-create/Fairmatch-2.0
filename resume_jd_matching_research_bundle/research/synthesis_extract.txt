@@ -1,0 +1,500 @@
+=== REPORT 01 ===
+88:## 3. Recommended Approach for OUR Product
+89-
+90:### 3.1 Architecture
+91-
+92-```
+93-Upload (PDF/DOCX/image)
+94-   │
+95-   ├── Format detector (mimetype + magic bytes)
+96-   │
+97-   ├── Text extraction router:
+98-   │     • Text-based PDF → PyMuPDF (pymupdf4llm markdown)
+99-   │       + pdfplumber for tables
+100-   │     • Complex layout (>1 col detected) → Docling OR Marker
+101-   │     • Scanned/image PDF → PaddleOCR OR AWS Textract
+102-   │     • DOCX → python-docx (paragraphs+styles)
+--
+123:### 3.2 Specific Recommendations
+124-
+125-| Component | Recommendation | Rationale |
+126-|---|---|---|
+127-| Primary PDF text | **PyMuPDF** via `pymupdf4llm` | Fastest, markdown output ideal for LLM; watch AGPL |
+128-| Complex layout | **Docling** (Apache-2.0) as primary, Marker as fallback | Best OSS layout AI in 2024–25 |
+129-| OCR | **PaddleOCR** (open) + **AWS Textract** (managed fallback) | PaddleOCR outperforms Tesseract on real resumes; Textract for enterprise SLA |
+130-| DOCX | `python-docx` + Mammoth for HTML view | Preserves styles/tables |
+131-| Structured extraction | **GPT-4o-mini** with **Instructor** (Pydantic) or **Outlines** for constrained decoding | 90%+ accuracy at ~$0.001/resume; strict JSON |
+132-| Self-host option | **Llama-3.1-8B-Instruct** or **Qwen2.5-7B-Instruct** via vLLM, JSON-constrained | For PII-sensitive customers (GDPR, EU AI Act) |
+133-| Contact regex | `phonenumbers`, custom URL regex | Deterministic, near-100% precision |
+134-| Skill extraction | LLM + **ESCO / Lightcast Open Skills** normalizer via embeddings | Explainable to bias auditors |
+135-| Skill NER fallback | `jjzha/escoxlmr-large-skill-extraction` | Reproducible baseline for regression tests |
+--
+140:### 3.3 Pros/Cons of the Recommended Stack
+141-
+142-**Pros**
+143-- Handles 2-column, scanned, and multilingual resumes.
+144-- LLM extraction removes need for large labeled resume dataset (which we don't have).
+145-- Deterministic regex + taxonomy normalization gives auditable trail for the bias-detection module.
+146-- Self-host path exists for EU AI Act "high-risk" hiring compliance ([EU AI Act Art. 6 Annex III](https://artificialintelligenceact.eu/)).
+147-
+148-**Cons**
+149-- LLM cost scales with volume; must cache and batch.
+150-- AGPL of PyMuPDF requires either license purchase or careful isolation.
+151-- Docling/Marker require GPU for best throughput.
+152-- LLM hallucination risk (fabricated employers/dates) — mitigate with schema constraints + span verification (require extracted strings to appear in source text).
+--
+154:### 3.4 Bias-Relevant Parsing Considerations
+155-
+156-Parsing choices directly affect downstream bias:
+157-- **Name/gender/ethnicity signals**: We must optionally **redact** names, addresses, photos, graduation years, and university names *before* the matching stage but *after* extraction into the audit-only path. Design the parser to emit these fields to a separate "sensitive attributes" bucket ([NYC Local Law 144](https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page) mandates AEDT bias audits).
+158-- **Photo detection**: PyMuPDF `page.get_images()` + face detector to flag photo-containing resumes (common in EU/LatAm/APAC) for redaction.
+159-- **OCR error rates by demographic**: OCR error rates can vary with fonts common in non-English resumes; track parsing quality by language/region as a fairness metric.
+160-
+161----
+162-
+163:## 4. Key Numbers & Facts Table
+164-
+165-| Fact | Value | Source |
+166-|---|---|---|
+167-| Traditional ATS keyword parsing accuracy | 60–70% | [Zylos 2026](https://zylos.ai/en/research/2026-01-18-ai-resume-matching-candidate-analysis) |
+168-| Rule-based NLP parser accuracy | 75–80% | [Zylos 2026](https://zylos.ai/en/research/2026-01-18-ai-resume-matching-candidate-analysis) |
+169-| Custom spaCy NER accuracy | 85–88% | [Zylos 2026](https://zylos.ai/en/research/2026-01-18-ai-resume-matching-candidate-analysis) |
+170-| Multi-agent / LLM parser accuracy | 90%+ | [Zylos 2026](https://zylos.ai/en/research/2026-01-18-ai-resume-matching-candidate-analysis) |
+171-| OCR character accuracy (clean scan, Tesseract) | >95% | [MiHCM 2025](https://mihcm.com/resources/blog/ai-resume-parser-enhance-applicant-data-accuracy) |
+172-| Textkernel LLM parser languages | 29+ | [Textkernel](https://www.textkernel.com/products-solutions/parser/) |
+173-| RChilli LLM parser languages | 40+ | [RChilli](https://www.rchilli.com/documentation/feature-doc/llm-gpt-enhancement-parser) |
+174-| RChilli claimed integration time | 2 days | [RChilli](https://www.rchilli.com/documentation/feature-doc/llm-gpt-enhancement-parser) |
+175-| Benchmark dataset size (PDF extraction) | 2,484 resumes, 20+ industries | [warazkhan/PDF-Resume-Extraction](https://github.com/warazkhan/PDF-Resume-Text-Extraction-Analysis-Framework) |
+--
+186:## 5. Open Questions, Risks & Gaps
+187-
+188-1. **Ground-truth dataset**: We do not have a labeled resume corpus. Options: (a) hand-label 500–1000 resumes with Prodigy/Argilla; (b) use Kaggle Resume Dataset (2,400+); (c) synthesize with LLMs but risk distribution shift. **Risk**: without ground truth we cannot measure parser regressions or subgroup accuracy for bias reporting.
+189-
+190-2. **License risk (PyMuPDF AGPL)**: If we ship parsing in a hosted SaaS, AGPL likely triggers source disclosure. Decision needed: buy commercial license (~$3–10k/yr) or switch to `pdfminer.six` + Docling.
+191-
+192-3. **LLM data-residency & PII**: Enterprise HR customers (esp. EU) will resist sending resumes to OpenAI. We need a self-hosted Llama-3.1/Qwen2.5 path from day one and clear DPA documentation ([EU AI Act](https://artificialintelligenceact.eu/) classifies hiring AI as high-risk).
+193-
+194-4. **Hallucination in structured extraction**: LLMs sometimes fabricate employers, dates, or degree names. Mitigation: verify every extracted span exists as a substring (or fuzzy match ≥ 0.9) in source text; drop or flag otherwise. Needs to be a hard gate.
+195-
+196-5. **Two-column detection heuristic**: What signal triggers Docling vs. PyMuPDF? Column count via layout model adds latency. Proposal: run PyMuPDF first, run a cheap column detector on bounding boxes, escalate to Docling only if columns > 1 or text-density anomaly.
+197-
+198-6. **Scanned resume prevalence**: Unknown in our target market. Need a customer sample to size OCR spend.
+=== REPORT 02 ===
+78:## 3. Recommended Approaches for OUR Product
+79-
+80:### 3.1 Recommendation: Hybrid ESCO-primary + Lightcast Open Skills overlay
+81-
+82-**Primary backbone: ESCO v1.2.0**
+83-- Pros: Open license, 28 languages, stable URIs, RDF-ready, hierarchical, occupation ↔ skill relations built in, transversal-skill tagging supports our bias detector, well-supported in academic tooling.
+84-- Cons: Weaker on emerging US-specific tech skills (e.g., "LangChain", "dbt", "Vertex AI") — typically 6–12 month lag.
+85-- Storage: load into Postgres + pgvector (or Neo4j if we want graph queries). Each row = ESCO URI, preferredLabel, altLabels[], description, skillType, broaderConcept, essentialForOccupations[], embedding vector.
+86-
+87-**Overlay: Lightcast Open Skills (free tier)**
+88-- Use to patch tech-skill coverage gaps. Maintain a mapping table `lightcast_id ↔ esco_uri` populated via embedding similarity (cosine ≥ 0.85) + human review for the top 2,000 tech skills.
+89-- Pros: fresh, US-market-aligned. Cons: free tier has rate limits and attribution requirements; full API is paid.
+90-
+91-**Occupation layer: ESCO occupations + O*NET SOC + Lightcast LOT**
+92-- Store cross-walks so a JD title "Senior Data Engineer" resolves to ESCO occupation, SOC 15-2051.00, and LOT ID. Use O*NET importance ratings to weight inferred skills.
+--
+97:### 3.2 Extraction Pipeline (specific stack)
+98-
+99-1. **Document parsing:** [unstructured.io](https://github.com/Unstructured-IO/unstructured) + [pdfplumber](https://github.com/jsvine/pdfplumber) for PDFs; python-docx for DOCX.
+100-2. **Section segmentation:** rule-based + a small fine-tuned classifier (DistilBERT) to identify Experience / Education / Skills / Projects sections.
+101-3. **Span candidate extraction:**
+102-   - Fast path: spaCy PhraseMatcher over ESCO+Lightcast alt-labels (recall booster).
+103-   - Neural path: fine-tuned **DeBERTa-v3-base** on [SkillSpan](https://github.com/kris927b/SkillSpan) + [Kompetencer](https://github.com/jjzha/kompetencer) merged; expect F1 ~0.65–0.72.
+104-   - LLM path (higher quality tier): Claude 3.5 Sonnet or GPT-4o-mini with structured JSON output; cache aggressively.
+105-4. **Linking to ontology (normalization):** encode candidate spans + all ESCO/Lightcast entries with **BGE-large-en-v1.5** or **JobBERT-v2**; store embeddings in **pgvector** or **Qdrant**. Top-k=5 retrieval; accept if cosine ≥ **0.72** (tune on held-out set); LLM verifier for 0.60–0.72 band.
+106-5. **Title inference:** encode JD title and match to ESCO occupations; expand to essentialSkills as *implicit* JD skills (weight 0.5 vs 1.0 for explicit).
+107-6. **Storage schema:** every extracted skill row carries `{surface_form, canonical_uri, confidence, source_span, taxonomy, skill_type, is_transversal}` — the `is_transversal` flag feeds the bias detector.
+108-
+109:### 3.3 Thresholds and Benchmarks to Adopt
+110-
+111-| Setting | Recommended value | Rationale |
+112-|---|---|---|
+113-| Cosine threshold, auto-accept | 0.72 | Balances P/R on ESCO linking per [Decorte 2023](https://arxiv.org/abs/2307.10778) |
+114-| Cosine threshold, LLM-verify | 0.60–0.72 | Middle-band reduces false positives |
+115-| Title→occupation top-k | 3 | Multiple occupations often valid |
+116-| Implicit-skill weight | 0.5 | Weighted lower than explicit resume skills |
+117-| Skill embedding model | BGE-large-en-v1.5 (retrieval) + JobBERT (domain) ensemble | Best F1 in our internal expectation |
+118-
+119:### 3.4 Alternatives Considered and Rejected (with reasons)
+120-
+121-- **Lightcast-only:** better US coverage but paid, single-vendor lock-in, no multilingual roadmap alignment with future EU customers.
+122-- **LinkedIn Skills Graph:** not licensable outside their platform.
+123-- **Build our own from scratch:** 12–18 month effort; no strategic advantage over ESCO baseline.
+124-- **O*NET as primary skill list:** too coarse (35 skills); use only for occupation weighting.
+125-
+126:## 4. Key Numbers & Facts Table
+127-
+128-| Fact | Value | Source |
+129-|---|---|---|
+130-| ESCO v1.2.0 skills | 13,939 | [ESCO portal](https://esco.ec.europa.eu/en/classification/skill_main) |
+131-| ESCO occupations | 3,039 | [ESCO portal](https://esco.ec.europa.eu/en/classification/occupation_main) |
+132-| ESCO languages | 28 | [ESCO](https://esco.ec.europa.eu/en) |
+133-| O*NET occupations (v29.1) | ~923 | [O*NET DB](https://www.onetcenter.org/database.html) |
+134-| O*NET skills list size | 35 | [O*NET Content Model](https://www.onetcenter.org/content.html) |
+135-| Lightcast Open Skills count | ~32,000+ | [Lightcast Open Skills](https://lightcast.io/open-skills) |
+136-| Lightcast LOT specialized occupations | 1,800+ | [Lightcast Taxonomies](https://lightcast.io/our-taxonomies) |
+137-| LinkedIn Skills Graph size (reported) | 41,000+ | [LinkedIn Engineering](https://engineering.linkedin.com/blog/2020/introducing-the-linkedin-knowledge-graph) |
+138-| SFIA v8 skills | 147 across 7 levels | [SFIA](https://sfia-online.org/en/sfia-8) |
+--
+144:## 5. Open Questions, Risks, and Gaps
+145-
+146-1. **Ontology freshness vs stability.** ESCO updates ~annually; tech skills evolve monthly. Do we run a **shadow taxonomy** for unmatched high-frequency spans and promote them quarterly? Recommend yes, with human review.
+147-2. **Legal/licensing on Lightcast full API.** Open Skills is free but the richer skill relations, categories, and monthly updates are gated. Decide budget before v1 ships.
+148-3. **SFIA commercial license fees.** Need commercial partner agreement before embedding SFIA level inference in a paid product.
+149-4. **Bias risks embedded in taxonomies.** Transversal skills ("cultural fit", "leadership presence") and occupation stereotypes (e.g., "nurse" gender skew in embeddings) can leak bias into scoring. Our bias detector must (a) flag matches driven predominantly by transversal skills, and (b) audit occupation→skill inferences for demographic disparity. See [De-Arteaga et al. 2019, "Bias in Bios"](https://arxiv.org/abs/1901.09451) and [Wilson & Caliskan 2024](https://arxiv.org/abs/2407.20371).
+150-5. **Cross-walk quality.** Auto-mapping Lightcast↔ESCO via embeddings has ~85–90% top-1 accuracy in our expectation; the remaining 10–15% will produce silent scoring errors. Budget for manual curation of the top 2,000 skills.
+151-6. **Multilingual scope.** If we serve non-English resumes in v1, ESCOXLM-R or multilingual E5 must be used; JobBERT is English-only.
+152-7. **Skill importance / weighting.** Neither ESCO nor Lightcast Open Skills expose good "importance" weights. O*NET does, but only at occupation level. We may need to learn weights from historical hire/reject data — which itself risks re-encoding past hiring bias. Fairness-aware weight learning is an open R&D item.
+153-8. **Skill inference explainability.** Implicit skills inferred from titles must be clearly labeled in the UI, or recruiters will treat them as if they were on the resume — a legal and fairness risk under EU AI Act "high-risk" employment provisions ([EU AI Act Annex III](https://artificialintelligenceact.eu/annex/3/)).
+154-9. **Emerging GenAI skills.** "Prompt engineering", "LLM ops", "RAG" appeared in postings in 2023 and are still partially missing from ESCO 1.2. Plan quarterly patch releases from Lightcast + internal curation.
+155-10. **Evaluation dataset.** We need an internal gold-labeled set of ~500 resumes and 500 JDs with ESCO/Lightcast URIs to measure extraction P/R/F1 and to unit-test bias metrics. Budget ~2 annotator-weeks.
+156-
+=== REPORT 03 ===
+86:## 3. Recommended Approaches for Our Product
+87-
+88:### 3.1 Architecture Recommendation
+89-
+90-**Layer 1 — Structured skill extraction (offline, at ingest):**
+91-- Use **spaCy 3.7+ EntityRuler** with a curated skill lexicon derived from **ESCO** (~13k skills) + **Lightcast Open Skills** (~32k), normalized to canonical IDs.
+92-- Augment with **KeyBERT** (model: `all-mpnet-base-v2` for quality or `all-MiniLM-L6-v2` for speed; `keyphrase_ngram_range=(1,3)`, `use_mmr=True`, `diversity=0.4`) to catch out-of-taxonomy skills, per Nexus recommendation ([KeyBERT](https://maartengr.github.io/KeyBERT/)).
+93-- For high-value docs, LLM extraction (GPT-4o-mini or Llama-3.1-8B) with a strict JSON schema returning `{required_skills, preferred_skills, years_experience, education}`.
+94-
+95-**Layer 2 — Sparse retrieval and hard filter:**
+96-- **OpenSearch** or **Elasticsearch** with **BM25F**, field-weighted: `skills^3, title^2, experience^1.5, body^1`.
+97-- Tune `k1=1.2, b=0.75` initially; grid-search on labeled recruiter feedback.
+98-- Hard filter: `matched_required_skills / total_required_skills ≥ 0.6` (configurable per role).
+99-
+100-**Layer 3 — Dense semantic scoring:**
+--
+115:### 3.2 Bias-Detection Hooks in the Keyword Layer
+116-
+117-- **JD-side scan**: flag gendered/ageist/ableist terms via a maintained lexicon (Textio-style) + a classifier trained on Gaucher et al. word lists.
+118-- **Keyword-weighting audit**: log the top-20 keywords contributing to score; disparate impact analysis across demographic proxies.
+119-- **Anti-stuffing**: detect white text, keyword-density outliers (z-score on TF distribution), and duplicated JD phrases in resumes.
+120-- **Synonym expansion transparency**: log every synonym/embedding expansion applied so audits can reproduce scores.
+121-
+122:### 3.3 Tooling Choices — Pros/Cons
+123-
+124-| Component | Recommended | Alternative | Why |
+125-|---|---|---|---|
+126-| Sparse index | OpenSearch 2.x (BM25F + hybrid built-in) | Elasticsearch, Vespa | Open-source, native hybrid RRF, mature |
+127-| Skill extraction | spaCy + EntityRuler + ESCO/Lightcast | LLM-only | Deterministic, auditable, cheap |
+128-| Keyphrase (open) | KeyBERT (mpnet) | YAKE, RAKE | Best quality; MMR diversity |
+129-| Dense embeddings | bge-large-en-v1.5 | OpenAI text-embedding-3-large | On-prem, GDPR-friendly, top MTEB score |
+130-| Re-ranker | bge-reranker-v2-m3 | Cohere Rerank 3 | Multilingual, on-prem |
+131-| Vector store | Qdrant | pgvector, Weaviate | Fast filtering + payload metadata |
+132-
+133:## 4. Key Numbers & Facts Table
+134-
+135-| Fact | Value | Source |
+136-|---|---|---|
+137-| BM25 default parameters | k1=1.2, b=0.75 | [Elastic docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-similarity.html) |
+138-| RRF default k | 60 | [Cormack 2009](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) |
+139-| KeyBERT recommended MMR/diversity for JDs | MMR=True, diversity=0.4 | [Nexus 2026](https://www.sciencedirect.com/science/article/pii/S1877050926018041) |
+140-| ESCO skill taxonomy size | ~13,890 skills | [ESCO](https://esco.ec.europa.eu/) |
+141-| Lightcast Open Skills size | ~32,000 skills | [Lightcast](https://lightcast.io/open-skills) |
+142-| BEIR BM25 zero-shot NDCG@10 avg | ~0.428 (strong baseline) | [BEIR paper](https://arxiv.org/abs/2104.08663) |
+143-| Sentence-Transformers `all-mpnet-base-v2` STS-b | 0.858 Spearman | [SBERT models](https://www.sbert.net/docs/pretrained_models.html) |
+144-| BGE-large-en-v1.5 MTEB avg | 64.23 | [MTEB leaderboard](https://huggingface.co/spaces/mteb/leaderboard) |
+145-| Typical ATS keyword-match threshold to pass initial screen | 60–75% keyword overlap | [Jobscan](https://www.jobscan.co/blog/ats-resume/) |
+--
+149:## 5. Open Questions, Risks, and Gaps
+150-
+151-1. **No gold-standard resume-JD benchmark**: we will need to construct an internal labeled set (recruiter thumbs-up/down on 5–10k pairs) to tune α, RRF k, and field weights. Cold-start risk.
+152-2. **Skill taxonomy drift**: ESCO/Lightcast update quarterly; new skills ("LangChain", "vLLM", "MCP") lag by 6–12 months. Need an in-house "emerging skills" pipeline via KeyBERT + human review.
+153-3. **Multilingual resumes**: BM25 tokenization and skill lexicons are English-heavy. If we support EU/APAC hiring, need per-language analyzers and multilingual embeddings (`bge-m3`, `paraphrase-multilingual-mpnet`).
+154-4. **Bias in the skill taxonomy itself**: ESCO underrepresents care work, informal experience, and non-Western credentials — this could disadvantage protected groups. Requires explicit audit.
+155-5. **Adversarial keyword stuffing**: how aggressively do we penalize? False positives (e.g., a legitimate skills list) could hurt fair candidates. Need calibrated detector with human-in-loop.
+156-6. **Explainability vs performance**: cross-encoder re-rankers give the biggest quality lift but are the hardest to explain. We may need to expose only sparse+dense sub-scores in the UI and use the re-ranker score as an internal tiebreaker.
+157-7. **Legal exposure of match scores**: in NYC (Local Law 144), Illinois, and under EU AI Act, an automated match score used in hiring may require bias audits and candidate disclosure. Ensure every score component is loggable and reproducible.
+158-8. **LLM-based extraction non-determinism**: if we use GPT-4o for skill extraction, the same resume can yield slightly different skill lists across runs — hurts reproducibility of audits. Mitigate with `temperature=0`, cached outputs, and versioned prompts.
+159-9. **Weight tuning is per role family**: engineering vs sales vs nursing need very different `w_req/w_sem` mixes. Requires either per-family calibration or a learning-to-rank model on top.
+160-10. **Interaction with semantic layer**: over-reliance on embeddings can silently mask keyword misses on hard requirements (licenses, security clearance). The hard filter on required skills must sit *before* semantic scoring to prevent this failure mode.
+=== REPORT 04 ===
+101:## 3. Recommended Approaches for OUR Product
+102-
+103:### 3.1 Recommended architecture (two-stage + hybrid)
+104-
+105-```
+106-Resume/JD → chunker → 
+107-  [Stage 0] BM25/keyword + skill-taxonomy overlap (ESCO)
+108-  [Stage 1] Bi-encoder dense retrieval (BGE-base fine-tuned)  
+109-  [Stage 2] Cross-encoder rerank (bge-reranker-v2-m3) on top 50
+110-  [Stage 3] LLM explainer (GPT-4o-mini) generates rationale + skill gap
+111-→ Composite score (weighted) → Bias audit layer → UI
+112-```
+113-
+114:### 3.2 Specific model choices
+115-
+116-**Primary bi-encoder: `BAAI/bge-base-en-v1.5`, later fine-tuned.**
+117-- Pros: 63.5 MTEB, 768-dim, 512-token context, Apache-2.0, no API dependency, well-supported.
+118-- Cons: English-only; use `bge-m3` if we need multilingual.
+119-- Alternative for MVP speed: `all-MiniLM-L6-v2` — 5–10x faster, ~5-7 pts lower on retrieval; ideal for prototyping and a "fast tier."
+120-
+121-**Reranker: `BAAI/bge-reranker-v2-m3`** on top-50.
+122-- Pros: Best open reranker; multilingual future-proofing; ~50 ms/pair on GPU.
+123-- Cons: Latency; run only on top-K.
+124-- Alternative: **Cohere Rerank 3** if we want zero-ops and can accept vendor cost (~$2/1K searches).
+125-
+126-**Embedding API fallback: OpenAI `text-embedding-3-large` with `dimensions=1024`** — for tenants who prefer no self-hosted models.
+--
+132:### 3.3 Composite scoring recommendation
+133-
+134-```
+135-final_score = 0.45 * cross_encoder_rerank_score
+136-            + 0.30 * skill_overlap_score (ESCO-anchored)
+137-            + 0.15 * keyword/BM25_score
+138-            + 0.10 * structured_match (years, seniority, location)
+139-```
+140-Weights should be tuned on our internal labeled set. The **explicit skill and structured components are critical for bias mitigation and explainability** — recruiters can see *why* a candidate matched, and legal can audit which signals drove decisions.
+141-
+142:### 3.4 Fine-tuning plan
+143-
+144-1. Bootstrap with `netsol/resume-score-details` (1,031 GPT-4o pairs) + LLM-generated synthetic pairs from our own resume corpus.
+145-2. Get 2K–5K recruiter-labeled resume-JD pairs (thumbs up/down + optional 1-5 rating) via a review UI.
+146-3. Fine-tune `bge-base-en-v1.5` with MultipleNegativesRankingLoss, hard-negative mining, 3–5 epochs, LoRA adapters. Expected lift: +5–10 nDCG@10 on internal eval.
+147-4. Also fine-tune the reranker on triples (JD, positive resume, hard-negative resume).
+148-5. Re-evaluate quarterly; watch for distribution drift (new roles, new skills).
+149-
+150:### 3.5 Vector store
+151-
+152-- **[Qdrant](https://qdrant.tech/)** or **[Weaviate](https://weaviate.io/)** for on-prem; both support hybrid (dense+sparse BM25), payload filtering (location, seniority), and int8 quantization.
+153-- **pgvector** if we're staying in Postgres for simplicity (fine up to ~1M vectors with HNSW).
+154-- Avoid Pinecone lock-in unless we need managed simplicity.
+155-
+156:### 3.6 Bias considerations specific to embeddings
+157-
+158-Semantic embeddings **encode socioeconomic and demographic signals** — university prestige, name origin, address ZIP, prose sophistication. Research shows embedding-based ranking can amplify historical bias ([De-Arteaga et al., 2019, "Bias in Bios"](https://arxiv.org/abs/1901.09451); [Wilson & Caliskan, 2024, on LLM name bias](https://arxiv.org/abs/2402.14875)). Mitigations we should build:
+159-- **Redact PII (name, address, photo, graduation years, non-essential school info) before embedding** for the ranking pathway; keep original for display.
+160-- **Counterfactual testing** — swap names/schools/genders and measure score deltas (per [Fairness Gym](https://github.com/google/ml-fairness-gym)).
+161-- **Skill-anchored scoring blend** as above lowers pure-embedding contribution to final rank.
+162-- Log all embedding→score contributions for audit.
+163-
+164----
+165-
+166:## 4. Key Numbers & Facts Table
+167-
+168-| Fact | Value | Source |
+169-|---|---|---|
+170-| `all-MiniLM-L6-v2` params / dim / max tokens | 22M / 384 / 256 | [HF card](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) |
+171-| `bge-base-en-v1.5` MTEB avg | ~63.5 | [MTEB leaderboard](https://huggingface.co/spaces/mteb/leaderboard) |
+172-| `e5-mistral-7b-instruct` MTEB avg | ~66.6 | [E5-Mistral paper](https://arxiv.org/abs/2401.00368) |
+173-| OpenAI text-embedding-3-small pricing | $0.02 / 1M tokens | [OpenAI](https://openai.com/blog/new-embedding-models-and-api-updates) |
+174-| OpenAI text-embedding-3-large pricing | $0.13 / 1M tokens | [OpenAI](https://openai.com/blog/new-embedding-models-and-api-updates) |
+175-| Cohere Rerank 3 pricing | $2.00 / 1K searches | [Cohere](https://cohere.com/rerank) |
+176-| Cross-encoder rerank lift over dense alone | +8 to +20 nDCG@10 | [BEIR](https://arxiv.org/abs/2104.08663) |
+177-| Matryoshka dim reduction quality loss (768→256) | ~1–3 nDCG pts | [Kusupati 2022](https://arxiv.org/abs/2205.13147) |
+178-| Binary embedding storage reduction | ~32x with ~95% quality | [Cohere int8/binary blog](https://cohere.com/blog/int8-binary-embeddings) |
+--
+186:## 5. Open Questions / Risks / Gaps
+187-
+188-1. **No public gold benchmark for resume-JD relevance.** We must invest in an internal labeled evaluation set (target: 2K–5K recruiter-labeled pairs across job families) before we can meaningfully compare model choices. Without this, all model claims are anecdotal.
+189-2. **Bias leakage through embeddings.** Even redacted resumes still contain proxies (writing style, company prestige, immigration-linked phrasing). Do we need adversarial de-biasing (e.g., [INLP](https://arxiv.org/abs/2004.07667)) on our fine-tuned encoder? Trade-off: quality drops.
+190-3. **Long-context handling.** Resumes commonly exceed 512 tokens. Should we (a) chunk by section (experience/skills/education) and pool max, (b) use long-context models like `bge-m3` (8K), `nomic-embed` (8K), or `voyage-3` (32K)? Chunk-and-pool tends to be more explainable but harder to tune.
+191-4. **Multilingual roadmap.** If we serve EU/APAC, `bge-m3` or Cohere multilingual becomes mandatory; English-only choices lock us in.
+192-5. **LLM-judge cost at scale.** Using GPT-4o for online scoring is prohibitive; keep LLM only for offline eval and top-K rationale generation.
+193-6. **Vendor lock-in vs. control.** OpenAI/Cohere/Voyage APIs give quick wins but mean we cannot fully audit or fine-tune the embedding, which conflicts with our bias-audit product promise. Recommendation: self-host BGE for the auditable pathway, optionally offer OpenAI as a "fast tier" with a disclosure.
+194-7. **Legal defensibility of semantic scores.** EEOC/NYC Local Law 144 and EU AI Act require explanations of automated employment decisions. Pure embedding cosine similarity is hard to defend; the composite score with explicit skill/structured components is much easier to justify.
+195-8. **Distribution drift.** New job titles ("Prompt Engineer," "AI Safety Researcher") emerge fast; we need a re-training cadence and a "new skills" ingestion loop tied to ESCO extensions.
+196-9. **Cross-encoder calibration.** Reranker scores are not probabilities; if we surface them to recruiters as percentages we must calibrate (Platt scaling / isotonic regression) on labeled data.
+197-10. **Data licensing.** Kaggle/Monster resume datasets often have unclear commercial licenses — need clean-room review before training on them.
+=== REPORT 05 ===
+101:## 3. Recommended Approaches for Our Product
+102-
+103:### 3.1 Architecture (recommended)
+104-
+105-```
+106-Stage 0: JD/resume parsing → structured skills, titles, years, education
+107-Stage 1: Hybrid retrieval
+108-         - BM25 (OpenSearch) over skills+titles+text
+109-         - Dense: bge-large-en-v1.5 fine-tuned on our pairs → Qdrant/pgvector
+110-         - RRF fusion → top 200
+111-Stage 2: Cross-encoder rerank
+112-         - BAAI/bge-reranker-v2-m3 fine-tuned on recruiter labels → top 50
+113-Stage 3: LambdaMART (LightGBM lambdarank) with business features
+114-         - Skill match %, YoE delta, seniority, location, salary band, freshness
+115-         - Also consumes stage-2 score as a feature
+--
+124:### 3.2 Specific tool/model picks
+125-
+126-| Layer | Recommendation | Alternative | Why |
+127-|---|---|---|---|
+128-| Lexical | OpenSearch BM25 | Elasticsearch, Vespa | OSS, hybrid search built-in |
+129-| Dense encoder | `BAAI/bge-large-en-v1.5` fine-tuned | `all-mpnet-base-v2`, `e5-large-v2` | Top MTEB, permissive license |
+130-| Vector DB | Qdrant (self-host) or pgvector | Weaviate, Pinecone | Filtered ANN for location/role filters |
+131-| Reranker | `BAAI/bge-reranker-v2-m3` | Cohere Rerank 3 (API), ColBERTv2 | 8k context handles long resumes |
+132-| LTR | LightGBM `lambdarank` | XGBoost `rank:ndcg` | Fast, great with SHAP |
+133-| Feature store | Feast | Tecton | OSS, integrates with LGBM training |
+134-| Experimentation | GrowthBook + interleaving harness | Statsig | OSS, supports stratified analysis |
+135-| Fair reranking | FA*IR (`fairsearch-fair-python`) | DetConstSort | Off-the-shelf, audited |
+136-
+137:### 3.3 Training data plan
+138-
+139-1. **Bootstrap** with Kaggle Resume-Job Matching dataset + ResuméAtlas + scraped JDs, using ATS-style weak labels.
+140-2. **LLM silver labels**: use GPT-4o-mini to score 100k JD-resume pairs on a 0–3 scale; train initial bi-encoder and reranker.
+141-3. **Recruiter gold labels**: 5k–10k pairs via pairwise preference UI, prioritized by active learning (margin sampling on reranker confidence).
+142-4. **Continuous learning**: ATS outcomes (shortlist, interview, hire) feed weekly LTR retraining.
+143-
+144:### 3.4 Evaluation plan
+145-
+146-- **Offline**: NDCG@10 (primary), Recall@100 (retrieval), MRR (top-of-list quality), Precision@10 (UX). Report per-slice (gender-inferred, ethnicity-inferred, age band, job family).
+147-- **Fairness offline**: exposure disparity, rKL@K, demographic parity in top-10 ([Yang & Stoyanovich](https://arxiv.org/abs/1610.08559)).
+148-- **Online**: interleaving vs. current ranker on shortlist rate; guardrail on fairness metrics — auto-rollback on >5% subgroup regression.
+149-
+150:### 3.5 Cold-start policy
+151-
+152-- **New JD**: use skill-taxonomy expansion + dense retrieval only; disable LTR (insufficient features) until 20+ applications collected.
+153-- **New resume**: enrich via ESCO skill inference, use bi-encoder + reranker; skip business-feature LTR features that require history.
+154-
+155:## 4. Key Numbers & Facts Table
+156-
+157-| Item | Value | Source |
+158-|---|---|---|
+159-| XGBoost ranking objectives | `rank:pairwise`, `rank:ndcg`, `rank:map` | [XGBoost LTR](https://www.tutorialspoint.com/xgboost/xgboost-learning-to-rank.htm) |
+160-| BEIR hybrid (BM25+dense) uplift | +5–15% NDCG over single method | [Thakur 2021](https://arxiv.org/abs/2104.08663) |
+161-| BGE-reranker-v2-m3 context | 8192 tokens, multilingual | [HF card](https://huggingface.co/BAAI/bge-reranker-v2-m3) |
+162-| BERT + augmented Indeed resumes | 92% classification acc. | [ResuméAtlas](https://arxiv.org/html/2406.18125v1) |
+163-| Interleaving power vs. A/B | 10–100× more sensitive | [Radlinski & Craswell 2013](https://www.microsoft.com/en-us/research/publication/optimized-interleaving-for-online-retrieval-evaluation/) |
+164-| Active learning label savings | 40–60% for text ranking | [Wang 2023](https://arxiv.org/abs/2305.03027) |
+165-| Hard-negative mining gain | +3–8 pts NDCG (DPR/ANCE) | [ANCE 2020](https://arxiv.org/abs/2007.00808) |
+166-| Typical resume–JD NDCG@10 SOTA | 0.55–0.70 | [TalentCLEF](https://talentclef.github.io/) |
+167-| LLM-as-judge agreement with humans | ~80–90% on relevance | [Zheng 2023](https://arxiv.org/abs/2306.05685) |
+--
+170:## 5. Open Questions, Risks, and Gaps
+171-
+172-1. **Label proxy validity**: ATS outcomes (interview, hire) encode existing recruiter bias. Using them as ground truth for LTR risks **bias amplification**. Mitigation: audit label distributions by demographic slice; consider counterfactual LTR ([Joachims et al., 2017](https://arxiv.org/abs/1608.04468)) or IPS reweighting.
+173-
+174-2. **Fairness vs. accuracy tradeoff**: FA*IR/DetConstSort reranking typically costs 1–3 NDCG points. We need product-level guidance on acceptable tradeoff and whether to expose the "fairness knob" to recruiters.
+175-
+176-3. **Long-context resumes**: senior candidate resumes exceed 4k tokens; bge-reranker-v2-m3 handles 8k, but cross-encoder latency scales quadratically. Consider chunked reranking or section-level scoring.
+177-
+178-4. **Cold-start evaluation**: no established public benchmark for cold-start resume/JD matching — we may need to construct our own held-out cold-JD split.
+179-
+180-5. **Legal/regulatory**: NYC Local Law 144, EU AI Act (high-risk employment), and Illinois AI Video Interview Act may require **annual bias audits**, disparate-impact reporting, and candidate notification. Our evaluation harness must produce audit-ready reports.
+181-
+182-6. **Data licensing**: scraped Indeed/LinkedIn/Glassdoor data has murky licensing; hiQ v. LinkedIn is settled but risk remains. Prefer Kaggle-licensed and synthetic/LLM-generated data for training corpora we redistribute.
+=== REPORT 06 ===
+89:## 3. Recommended Approaches for Our Product
+90-
+91:### 3.1 Architecture
+92-
+93-Add a **Fairness & Bias Module** as a sidecar service to the matcher, with three subsystems:
+94-
+95-1. **JD Auditor** (pre-match): scans JD text for coded language, illegal criteria (age, citizenship), unnecessary requirements (degree/experience inflation).
+96-2. **Model Auditor** (pre-deployment + scheduled): runs counterfactual test suites and group-fairness metrics on the ranker.
+97-3. **Decision Auditor** (post-hoc, on recruiter actions): monitors selection rates in produced shortlists and recruiter accept/reject patterns.
+98-
+99:### 3.2 Concrete recommendations
+100-
+101-**Fairness metrics to expose (dashboard):**
+102-- **Adverse Impact Ratio (AIR)** per EEOC group at top-k (k=10, 25, 50) — required for NYC LL144 audits.
+103-- **Equal Opportunity Difference** where "positive" = recruiter-advanced candidates (proxy for Y).
+104-- **Exposure-based ranking fairness (NDKL)** across gender and race proxies.
+105-- **Counterfactual invariance score**: % of resumes whose top-k inclusion is unchanged under name/pronoun swap. Target ≥ 95%.
+106-- **Score gap under counterfactual**: mean |score(orig) − score(swapped)|. Target < 0.02 on 0-1 scale.
+107-
+108-**Thresholds & alerts:**
+109-- AIR < 0.80 → red flag, block deployment or trigger review (per EEOC 4/5ths).
+110-- AIR 0.80-0.90 → yellow, log and monitor.
+111-- Counterfactual score gap > 0.05 → investigate features.
+--
+133:## 4. Key Numbers & Facts Table
+134-
+135-| Fact | Value | Source |
+136-|---|---|---|
+137-| Amazon's model penalized "women's" tokens | Confirmed, scrapped 2018 | [Reuters](https://www.reuters.com/article/us-amazon-com-jobs-automation-insight-idUSKCN1MK08G) |
+138-| EEOC 4/5ths rule threshold | AIR ≥ 0.80 | [EEOC UGESP](https://www.eeoc.gov/uniform-guidelines-employee-selection-procedures) |
+139-| Bertrand-Mullainathan callback gap (white vs Black names) | ~50% more callbacks | [NBER 9873](https://www.nber.org/papers/w9873) |
+140-| GPT-3.5 top-choice rate: Asian-female vs Black-male names | 17.2% vs 7.6% | [Bloomberg 2024](https://www.bloomberg.com/graphics/2024-openai-gpt-hiring-racial-discrimination/) |
+141-| NYC LL144 audit required | Annual, publicly posted | [NYC DCWP](https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page) |
+142-| EU AI Act — resume screening classification | High-risk (Annex III) | [AI Act](https://artificialintelligenceact.eu/) |
+143-| Kleinberg impossibility (calibration vs equalized odds) | Cannot co-satisfy when base rates differ | [arXiv 1609.05807](https://arxiv.org/abs/1609.05807) |
+144-| Disability-award resumes ranked lower by GPT-4 | Confirmed | [Glazko et al. 2024](https://arxiv.org/abs/2402.01732) |
+145-| LinkedIn NDKL production metric | Deployed in Talent Search | [Geyik et al. KDD 2019](https://arxiv.org/abs/1905.01989) |
+--
+148:## 5. Open Questions, Risks, and Gaps
+149-
+150-1. **Ground-truth "qualified" labels are unavailable.** Without them, equal opportunity/odds are approximated with recruiter behavior — which itself is biased. *Mitigation*: expose demographic parity + counterfactual metrics as primary; treat equal opportunity as supplementary with disclaimers.
+151-2. **Inferring protected attributes for auditing is legally fraught.** In the US, using BISG (Bayesian Improved Surname Geocoding) to infer race for internal audits is defensible; storing inferred attributes is risky. *Mitigation*: compute audit metrics ephemerally, don't persist inferred demographics per candidate.
+152-3. **Intersectionality**: single-axis fairness misses Black-women-specific effects ([Buolamwini & Gebru, 2018](http://proceedings.mlr.press/v81/buolamwini18a.html)). Our dashboard should include intersectional subgroup metrics but sample-size caveats apply.
+153-4. **LLM/embedding bias is unstable across model versions.** Provider updates can silently change fairness properties. *Mitigation*: pin model versions; run counterfactual regression tests in CI.
+154-5. **Fairness ↔ accuracy trade-off is real but often overstated.** Post-processing on the ranker will slightly reduce nDCG; be prepared to justify to customers.
+155-6. **JD bias detection false positives** annoy hiring managers (e.g., flagging "competitive salary"). Need a tunable strictness slider and clear rationale strings.
+156-7. **Explainability**: SHAP over the semantic matcher is expensive; consider surrogate keyword-attribution models for per-candidate explanations required by EU AI Act Art. 13.
+157-8. **Global vs local fairness definitions**: EU views group parity more favorably than US law does. Product may need jurisdiction-configurable metric sets.
+158-9. **Adversarial candidates** who game the anonymized system (e.g., keyword stuffing) — separate risk but relevant to overall matcher robustness.
+159-10. **Data-provenance risk**: training on scraped LinkedIn data has legal + bias exposure. Prefer synthetic + licensed data for any fine-tuning.
+160-
+=== REPORT 07 ===
+89:## 3. Recommended Approaches for OUR Product
+90-
+91:### 3.1 Architecture: "Compliance-by-Design" Data Layer
+92-
+93-**Recommendation**: Instrument every stage of the pipeline (parse → extract → skill match → semantic score → rank → recruiter action) to emit immutable, timestamped events to an append-only audit log (e.g., **Postgres + logical replication** to an S3/Parquet store, or **Delta Lake**). Each event must carry: candidate pseudonymous ID, JD ID, model version, feature vector hash, output score, and (optionally) self-reported demographic labels stored in a **separate encrypted store** keyed only to audit jobs.
+94-
+95-Pros: enables retroactive audits across any time window; supports EU AI Act Art. 12 automatic logging; makes 4/5ths analysis a SQL query.
+96-Cons: storage cost; demographic data is a GDPR Art. 9 hazard — mitigate with strict access control and Article 9(2)(g) "substantial public interest" legal basis.
+97-
+98:### 3.2 Fairness Metrics Library
+99-
+100-**Recommendation**: Use **`holisticai`** (MIT license) as primary + **`fairlearn`** (Microsoft, MIT) as secondary. Implement:
+101-
+102-- **Disparate Impact Ratio** (4/5ths) — primary Local Law 144 metric.
+103-- **Statistical Parity Difference**.
+104-- **Equal Opportunity Difference** and **Equalized Odds** (when ground-truth hire outcomes available).
+105-- **Cohen's d** on score distributions across groups.
+106-- **Fisher's exact test** p-values.
+107-
+108-Threshold config: flag DIR < 0.80 OR (DIR < 0.90 AND p < 0.05 AND n > 500). Rationale: 4/5ths alone misses statistically significant small effects in large populations, a known critique the EEOC has acknowledged.
+109-
+110:### 3.3 Bias Audit Report Generator
+111-
+112-Build a **templated PDF/HTML report generator** (Jinja2 + WeasyPrint) that mirrors the DCWP Local Law 144 summary format exactly, including intersectional Sex × Race/Ethnicity tables and unknown-category counts. Auto-generate per-customer, per-quarter.
+113-
+114:### 3.4 EU AI Act Technical File
+115-
+116-Maintain a **living "Annex IV" document** in-repo (Markdown → PDF on release) covering: system architecture, data governance, risk management, accuracy metrics, human oversight design, cybersecurity, post-market monitoring plan. Version-lock with each model release. Use **Credo AI** or **Holistic AI Governance Platform** if we want managed evidence collection; else self-host.
+117-
+118:### 3.5 Third-Party Auditor Selection
+119-
+120-**Recommendation**: Partner with **BABL AI** or **Holistic AI** for annual independent bias audits — they have established Local Law 144 templates and ISO/IEC 42001 experience. Budget ~$25–75K per audit depending on data scope.
+121-
+122:### 3.6 Human-in-the-Loop Design
+123-
+124-To avoid GDPR Art. 22 "solely automated decision" and EU AI Act automation-bias risks: present matches as **ranked recommendations with explanations**, require recruiter confirmation to advance candidate, log the recruiter's override rate (which itself becomes an audit signal). Never expose a "reject" action driven purely by score threshold without human review.
+125-
+126:### 3.7 Candidate Notice & Consent Flows
+127-
+128-Provide tenants with a **configurable candidate-notice template** covering: (a) NYC 10-day AEDT notice + qualifications used, (b) Illinois AIVIA notice + consent (if video features enabled), (c) GDPR Art. 13/14 notice + Art. 22 human-review right, (d) Colorado consequential-decision notice with right to appeal.
+129-
+130:## 4. Key Numbers & Facts Table
+131-
+132-| Item | Value | Source |
+133-|---|---|---|
+134-| NYC LL144 effective date | July 5, 2023 | [DCWP](https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page) |
+135-| NYC LL144 candidate notice period | ≥10 business days | [LegalClarity](https://legalclarity.org/nyc-local-law-144-bias-audit-requirements-and-penalties) |
+136-| NYC LL144 penalty | $500–$1,500/violation/day | LegalClarity |
+137-| EEOC 4/5ths threshold | Impact ratio < 0.80 | [SiftFirst](https://siftfirst.com/compliance/eeoc-four-fifths-rule) |
+138-| EU AI Act high-risk applicable | Aug 2, 2026 | [EU AI Act Hiring](https://www.euai-act.com/articles/hiring-ai-compliance) |
+139-| EU AI Act max fine (high-risk) | €15M or 3% global turnover | EU AI Act Art. 99 |
+140-| EU AI Act max fine (prohibited) | €35M or 7% global turnover | EU AI Act Art. 99 |
+141-| Colorado AI Act effective | Feb 1, 2026 | [Brightmine](https://www.brightmine.com/us/resources/hr-strategy/hr-technology/colorado-ai-law-regulates-ai-in-employment) |
+142-| Colorado discrimination disclosure window | 90 days to AG | Brightmine |
+--
+149:## 5. Open Questions / Risks / Gaps
+150-
+151-1. **Where do we get demographic data for bias auditing?** Most resumes don't include race/sex. Options: (a) voluntary self-ID collected via tenant's ATS, (b) proxy inference (BISG surname/geo — legally fraught and inaccurate), (c) synthetic test data. **Risk**: proxy inference may itself violate GDPR/Art. 9 and Colorado AI Act. **Recommendation**: require tenants to supply self-ID data under a DPA; never infer.
+152-
+153-2. **Are we an AEDT "developer" or does the employer own that classification?** Under Local Law 144, the *employer* is liable, but under Colorado AI Act and EU AI Act, **we as developer/provider** have direct duties. Legal review needed on which SKUs cross the "substantially assist or replace" threshold.
+154-
+155-3. **How do we handle multi-jurisdiction tenants?** A global SaaS customer may trigger NYC + Illinois + Colorado + EU obligations simultaneously with different disclosure texts and audit formats. Need a **jurisdiction-router** in the notice/consent module.
+156-
+157-4. **Semantic embedding bias measurement is immature.** Standard 4/5ths applies to selection outcomes; measuring bias in dense-vector similarity scores (e.g., are Black-associated names systematically lower cosine similarity to SWE JDs?) lacks a regulator-endorsed methodology. Consider **CEAT (Contextualized Embedding Association Test)** and **SEAT** but recognize these are research-grade.
+158-
+159-5. **Will Colorado AI Act be amended before Feb 2026?** The 2025 CO legislature debated amendments; SaaS obligations could shift. Monitor and design flexible impact-assessment templates.
+160-
+161-6. **EU AI Act harmonized standards not yet finalized** (CEN-CENELEC JTC 21 drafts expected late 2025/2026). Until then, conformity is via general-purpose gap analysis — reserve engineering time for standards alignment in H2 2026.
+=== REPORT 08 ===

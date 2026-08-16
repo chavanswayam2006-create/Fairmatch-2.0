@@ -1,0 +1,26 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_16-54-27.887487373_parallel_web_search_ee7617f1.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_017f2c8021d66475a9ab40cbdeded9ce",
+  "results": [
+    {
+      "url": "https://arxiv.org/html/2406.15484v2",
+      "title": "JobFair: A Framework for Benchmarking Gender Hiring Bias in Large Language Models",
+      "publish_date": null,
+      "excerpts": [
+        "... Benchmarking Gender Hiring Bias in Large Language Models\") discusses the technical details of our experiments. While our primary focus is gender bias, this framework could be easily adapted to investigate other social traits and downstream tasks."
+      ]
+    },
+    {
+      "url": "https://arxiv.org/html/2406.15484v1",
+      "title": "JobFair: A Framework for Benchmarking Gender Hiring Bias in Large Language Models",
+      "publish_date": null,
+      "excerpts": [
+        "This study underscores the ethical imperative of benchmarking gender hiring bias in Large Language Models (LLMs). As these models increasingly influence high-stakes decisions like hiring, ensuring fairness and equity is paramount. Bias in LLMs undermines the credibility of automated systems and perpetuates systemic bias, with far-reaching societal impacts. Our approach follows stringent ethical guidelines to ensure integrity and fairness. All resume data were anonymized to protect individual privacy, with personally identifiable information removed to comply with data protection standards. Our counterfactual methodology creates gender-specific versions of resumes to rigorously evaluate gender bias without introducing new biases. By avoiding names and other confounding variables, we isolated gender as the sole variable, ensuring result validity. In developing the JobFair framework, we prioritized transparency and reproducibility.\n\n...\n\n[Resume classification system using natural language processing and machine learning techniques](https://doi.org/10.22581/muet1982.2201.07) . _Mehran University Research Journal of Engineering and Technology_ , 41(1):65–79. Open access.\n* Altonji and Pierret (2001) ↑ Joseph G. Altonji and Charles R. Pierret. 2001. Employer learning and statistical discrimination. _The Quarterly Journal of Economics_ , 116(1):313–350.\n* An et al. (2024) ↑ Jiafu An, Difang Huang, Chen Lin, and Mingzhu Tai. 2024. [Measuring gender and racial biases in large language models](https://arxiv.org/abs/2405.06687) . _arXiv preprint arXiv:2405.06687_ .\n* Anthropic (2024) ↑ AI Anthropic. 2024. The claude 3 model family: Opus, sonnet, haiku. _Claude-3 Model Card_ .\n* Arellano (1987) ↑ Manuel Arellano. 1987. [Computing robust standard errors for within-groups estimators](https://doi.org/10.1111/j.1468-0084.1987.mp49004006.x) . _Oxford Bulletin of Economics and Statistics_ , 49(4):431–434.\n* Armstrong et al.\n(2024) ↑ Lena Armstrong, Abbey Liu, Stephen MacNeil, and Danaë Metaxa. 2024. [The silicone ceiling: Auditing gpt’s race and gender biases in hiring](https://arxiv.org/abs/2405.04412) . _arXiv preprint arXiv:2405.04412_ .\n* Arrow (1973) ↑ Kenneth J. Arrow. 1973. The theory of discrimination. In Orley Ashenfelter and Albert Rees, editors, _Discrimination in Labor Markets_ , pages 3–33. Princeton University Press.\n* Becker (1957) ↑ Gary S. Becker. 1957. _The Economics of Discrimination_ . University of Chicago Press.\n* Bertrand and Mullainathan (2004) ↑ Marianne Bertrand and Sendhil Mullainathan. 2004. [Are emily and greg more employable than lakisha and jamal? a field experiment on labor market discrimination](https://doi.org/10.1257/0002828042002561) . _American Economic Review_ , 94(4):991–1013.\n* Bhawal (2021) ↑ Snehaan Bhawal. 2021. [Resume dataset](https://www.kaggle.com/datasets/snehaanbhawal/resume-dataset/data) . Accessed: 2024-05-30.\n* Brown et al. (2020) ↑ Tom B."
+      ]
+    },
+    {
+      "url": "https://github.com/OmPatil2806/AI-Powered-Hiring-Intelligence-System",
+      "title": "GitHub - OmPatil2806/AI-Powered-Hiring-Intelligence-System: AI-Powered Hiring Intelligence System that matches resumes to job descriptions using BERT embeddings &
+... [truncated]

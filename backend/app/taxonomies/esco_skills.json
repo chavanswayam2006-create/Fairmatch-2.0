@@ -1,0 +1,68 @@
+{
+  "esco_occupations": [
+    {
+      "code": "2512.1",
+      "canonical_title": "Software Developer",
+      "aliases": ["Software Engineer", "Full Stack Developer", "Application Engineer", "Programmer", "Backend Engineer"],
+      "esco_uri": "http://data.europa.eu/esco/occupation/2512.1",
+      "essential_skills": ["python", "javascript", "typescript", "java", "c++", "sql", "git", "rest api", "system design", "unit testing"],
+      "optional_skills": ["docker", "kubernetes", "aws", "react", "fastapi", "django", "spring boot", "ci/cd"]
+    },
+    {
+      "code": "2511.1",
+      "canonical_title": "Data Analyst",
+      "aliases": ["Business Data Analyst", "BI Analyst", "Reporting Analyst", "Data Analytics Specialist"],
+      "esco_uri": "http://data.europa.eu/esco/occupation/2511.1",
+      "essential_skills": ["sql", "python", "r", "excel", "data visualization", "tableau", "power bi", "statistical analysis"],
+      "optional_skills": ["snowflake", "bigquery", "dbt", "etl", "machine learning", "looker"]
+    },
+    {
+      "code": "2512.2",
+      "canonical_title": "Data Scientist",
+      "aliases": ["Machine Learning Engineer", "AI Specialist", "NLP Engineer", "Algorithm Engineer"],
+      "esco_uri": "http://data.europa.eu/esco/occupation/2512.2",
+      "essential_skills": ["python", "machine learning", "deep learning", "pytorch", "tensorflow", "scikit-learn", "sql", "pandas", "numpy"],
+      "optional_skills": ["nlp", "computer vision", "llm", "xgboost", "spark", "prompt engineering"]
+    },
+    {
+      "code": "2411.1",
+      "canonical_title": "Financial Analyst",
+      "aliases": ["Investment Analyst", "Financial Risk Analyst", "Corporate Finance Specialist"],
+      "esco_uri": "http://data.europa.eu/esco/occupation/2411.1",
+      "essential_skills": ["financial modeling", "valuation", "forecasting", "budgeting", "excel", "financial analysis", "gaap", "ifrs"],
+      "optional_skills": ["sap", "quickbooks", "sql", "bloomberg terminal", "auditing"]
+    },
+    {
+      "code": "1212.1",
+      "canonical_title": "Human Resources Manager",
+      "aliases": ["HR Director", "People Operations Manager", "Talent Acquisition Manager", "HR Generalist"],
+      "esco_uri": "http://data.europa.eu/esco/occupation/1212.1",
+      "essential_skills": ["talent acquisition", "onboarding", "hris", "employee relations", "performance management", "workforce planning", "compliance"],
+      "optional_skills": ["workday", "bamboohr", "recruiting", "compensation & benefits"]
+    },
+    {
+      "code": "2519.1",
+      "canonical_title": "Cybersecurity Specialist",
+      "aliases": ["Security Engineer", "Penetration Tester", "Information Security Analyst", "SOC Analyst"],
+      "esco_uri": "http://data.europa.eu/esco/occupation/2519.1",
+      "essential_skills": ["cybersecurity", "penetration testing", "network security", "siem", "incident response", "vulnerability assessment", "cryptography"],
+      "optional_skills": ["cissp", "comptia security+", "wireshark", "cloud security", "firewall management"]
+    },
+    {
+      "code": "2142.1",
+      "canonical_title": "Civil Engineer",
+      "aliases": ["Structural Engineer", "Construction Engineer", "Infrastructure Specialist"],
+      "esco_uri": "http://data.europa.eu/esco/occupation/2142.1",
+      "essential_skills": ["cad", "autocad", "structural analysis", "construction management", "site supervision", "building codes", "project estimation"],
+      "optional_skills": ["revit", "gis", "surveying", "cost estimation"]
+    },
+    {
+      "code": "2221.1",
+      "canonical_title": "Registered Nurse",
+      "aliases": ["Clinical Nurse", "Staff Nurse", "Healthcare Specialist", "Nursing Associate"],
+      "esco_uri": "http://data.europa.eu/esco/occupation/2221.1",
+      "essential_skills": ["patient care", "clinical research", "emr", "triage", "medication administration", "vital signs", "healthcare compliance"],
+      "optional_skills": ["icu care", "pediatric care", "bls certification", "acls certification"]
+    }
+  ]
+}

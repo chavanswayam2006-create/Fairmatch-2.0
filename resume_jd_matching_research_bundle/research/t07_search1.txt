@@ -1,0 +1,21 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_16-57-05.989794467_parallel_web_search_16e24956.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_35d5da39da487918d8363f9c5ebd6be9",
+  "results": [
+    {
+      "url": "https://legalclarity.org/nyc-local-law-144-bias-audit-requirements-and-penalties",
+      "title": "NYC Local Law 144: Bias Audit Requirements and Penalties - LegalClarity",
+      "publish_date": "2026-05-28",
+      "excerpts": [
+        "[Employment Law](https://legalclarity.org/category/employment-law/)\n\n# NYC Local Law 144: Bias Audit Requirements and Penalties\n\nNYC Local Law 144 requires employers using AI hiring tools to conduct bias audits, disclose results, and notify candidates — with penalties for each violation.\n\nLegalClarity New York\n\nPublished May 28, 2026\n\nLocal Law 144 requires New York City employers and employment agencies to conduct independent bias audits, publish the results, and notify candidates before using automated tools to screen applicants or evaluate employees for promotion. Enacted in 2021 and enforced by the Department of Consumer and Worker Protection (DCWP) since July 5, 2023, the law is the first municipal regulation in the United States specifically targeting algorithmic hiring tools. ¹ NYC Department of Consumer and Worker Protection. [Automated Employment Decision Tools (AEDT)](https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.\n\n...\n\nPassing a Local Law 144 bias audit does not establish that defense — the audit only measures whether different selection rates exist, not whether those differences are legally justified. Employers relying on automated hiring tools in NYC face a dual compliance obligation: procedural compliance with Local Law 144 and substantive compliance with federal and state anti-discrimination law.\n\n## The Broader Regulatory Landscape\n\nNYC was first, but other jurisdictions are following. Colorado enacted the Colorado AI Act in 2024, which takes effect on February 1, 2026, and imposes obligations on both developers and deployers of “high-risk” AI systems that make or substantially influence “consequential decisions,” including employment decisions. ⁷ Colorado General Assembly. [SB24-205 Consumer Protections for Artificial Intelligence](https://leg.colorado."
+      ]
+    },
+    {
+      "url": "https://www.euai-act.com/articles/hiring-ai-compliance",
+      "title": "AI in Hiring: EU AI Act Compliance for Recruitment AI — EU AI Act",
+      "publish_date": "2026-08-04",
+      "excerpts": [
+        "EU AI Act\n\nHome About EU AI Act Compliance Guide Articles Solutions\n\nen\n\n[Try Ctrl AI](https://ctrlai.com/euaiact)\n\n1. Home\n2. Articles\n3. AI in Hiring: EU AI Act Compliance for Recruitment AI\n\nUse Cases hiring recruitment hr\n\n# AI in Hiring: EU AI Act Compliance for Recruitment AI\n\nAI used in recruitment and hiring is classified as high-risk under the EU AI Act. Understand the requirements for CV screening, interview analysis, and automated hiring decisions.\n\nApril 1, 2025 UpdatedAugust 4, 2026 12 min read\n\nArtificial intelligence has transformed recruitment. From CV screening algorithms that filter thousands of applications in seconds to video interview analysis tools that evaluate candidates' communication patterns, AI is now embedded throughout the hiring pipeline. For employers, these tools promise efficiency and consistency. For job seekers, they can mean the difference between getting an interview and being silently rejected by an algorithm they never knew existed.\n\n...\n\nAn AI system that produces discriminatory outcomes violates these directives regardless of AI Act compliance.\n* **National employment law** — many EU member states have additional protections, including works council consultation requirements for introducing new workplace technologies.\n\nCompliance with the AI Act does not guarantee compliance with GDPR or employment law, and vice versa. Organizations must address all applicable legal frameworks when deploying recruitment AI.\n\n## Practical Steps for HR Teams\n\n**Audit your current AI tools.** Identify e
+... [truncated]

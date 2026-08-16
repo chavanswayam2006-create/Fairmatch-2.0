@@ -1,0 +1,29 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_16-51-58.379965728_parallel_web_search_47acfced.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_e701557ac5620d013b7eddc1c3be320a",
+  "results": [
+    {
+      "url": "https://www.kaggle.com/datasets/darysha/hse-hackathon",
+      "title": "Resume-Job Matching Dataset",
+      "publish_date": null,
+      "excerpts": [
+        "Resume-Job Matching Dataset\nThis dataset contains detailed information about job applicants (resumes) and job vacancies, along with the response status (\"Invitation\" or \"Rejection\")."
+      ]
+    },
+    {
+      "url": "https://www.kaggle.com/code/siddigantm/task-resume-matching-with-job-descriptions",
+      "title": "Task: Resume Matching with Job Descriptions",
+      "publish_date": "2023-09-20",
+      "excerpts": [
+        "Kaggle uses cookies from Google to deliver and enhance the quality of its services and to analyze traffic.\n\nLearn more\n\nOK, Got it.\n\nSomething went wrong and this page crashed!\n\n###### Something went wrong and this page crashed!\n\nIf the issue persists, it's likely a problem on our side.\n\n```\nLoading chunk 6803 failed.\n(error: https://www.kaggle.com/static/assets/6803.64af35880ecb1baf.js)\n\nkeyboard_arrow_up content_copy\n\nChunkLoadError\n    at i.f.j (https://www.kaggle.com/static/assets/runtime.js?v=bd29751a3eebe6c9:1:13415)\n    at https://www.kaggle.com/static/assets/runtime.js?v=bd29751a3eebe6c9:1:898\n    at Array.reduce (<anonymous>)\n    at i.e (https://www.kaggle.com/static/assets/runtime.js?v=bd29751a3eebe6c9:1:877)\n    at Object.requireAsync (https://www.kaggle.com/static/assets/app.js?v=276513eabeef3c21:1:2940020)\n    at v (https://www.kaggle.com/static/assets/app.js?v=276513eabeef3c21:1:4918927)\n    at r.resolveAsync (https://www.kaggle.com/static/assets/app.js?\nv=276513eabeef3c21:1:4921142)\n    at r.loadAsync (https://www.kaggle.com/static/assets/app.js?v=276513eabeef3c21:1:4920886)\n    at r.componentDidMount (https://www.kaggle.com/static/assets/app.js?v=276513eabeef3c21:1:4920001)\n    at sg (https://www.kaggle.com/static/assets/vendor.js?v=e74ff7334a03237e:240:747964)\n```\n\nRefresh"
+      ]
+    },
+    {
+      "url": "https://arxiv.org/html/2406.18125v1",
+      "title": "ResuméAtlas: Revisiting Resume Classification with Large-Scale Datasets and Large Language Models",
+      "publish_date": null,
+      "excerpts": [
+        "It confronts the central issue of inefficiency and manual effort inherent in resume categorization and verification, proposing automation as a substantial alleviating measure. Leveraging machine-learning algorithms, including Naïve Bayes, SVMs, and random forest, the investigation endeavors to extract skills and categorize resumes into pertinent job profile classes. Data acquisition spans various sources such as Kaggle, Glassdoor, and Indeed, yielding unstructured datasets subjected to cleaning, classification, and storage processes. A training dataset encompassing 70% of the total dataset is utilized. Findings reveal the superiority of the random forest model over Naïve Bayes and SVM, yielding an accuracy rate of 70% and exhibiting enhanced predictive capabilities.\n\nSkondras et al. (2023) [ [2](https://arxiv.org/html/2406.18125v1.\nbib2) ] explored using synthetic resumes to augment training data and improve the effectiveness of resume classification algorithms, particularly in categories with sparse samples. The authors employed the OpenAI API to generate structured and unstructured resumes and resumes from the Indeed website with total records of 4791 in the ChatGPT Dataset and 1533 in the Indeed Dataset with 15 categories. These synthetic resumes were used to train two models: a transformer model (BERT) and a feedforward neural network (FFNN) incorporating Universal Sentence Encoder 4 (USE4) embeddings. The experiments showcased that the BERT mode, coupled with augmented datasets, demonstrated superior performance compared to the FFNN model. A 92% accuracy was achieved in the sixth experiment, where the BERT model was combined with the Indeed augmented dataset.\n\nAdditionally, Ali et a
+... [truncated]

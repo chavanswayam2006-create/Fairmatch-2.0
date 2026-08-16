@@ -1,0 +1,21 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_16-42-55.990382602_parallel_web_search_baf62f1d.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_818d144f868b500d170922ff56063f70",
+  "results": [
+    {
+      "url": "https://lightcast.io/our-taxonomies",
+      "title": "Lightcast Taxonomies - Skills, Occupations, Titles | Lightcast",
+      "publish_date": null,
+      "excerpts": [
+        "About the Skills Based Approach Skills Overview Get API Access\n\n# The Lightcast Occupation Taxonomy\n\n### 1800+ Specialized Occupations\n\nThe [Lightcast Occupation Taxonomy](https://lightcast.io/lot/occupations/categories) is the universal standard for understanding occupations across the globe, uses a proprietary classification system of four different levels: career areas | occupation groups | occupations | specialized occupations.\n\nThe LOT is derived from data gathered via real-world postings and profiles. It delves deeper into specifics compared to government systems, such as O\\*NET and SOC. And it undergoes annual updates, (unlike the government systems whose update cycle in many years) striking a balance between stability and usefulness for longitudinal comparisons, while also promptly capturing newly emerging roles as they formalize in the economy.\n\nAs we move up in the hierarchy, subsections are exclusive to their associated category."
+      ]
+    },
+    {
+      "url": "https://www.resumly.ai/blog/the-importance-of-skill-tagging-for-job-matching",
+      "title": "The Importance of Skill Tagging for Job Matching",
+      "publish_date": "2025-10-07",
+      "excerpts": [
+        "##### Table of Contents\n\n* Why Skill Tagging Matters More Than Ever\n* How Skill Tagging Works: A Step‑by‑Step Guide\n* Step 1: Identify Core Competencies\n* Step 2: Choose a Standardized Taxonomy\n* Step 3: Embed Tags in Your Resume\n* Step 4: Validate with an ATS Checker\n* Step 5: Leverage Automated Matching\n* Real‑World Example: From Generic to Tagged\n* Checklist: Perfect Skill Tagging\n* Do’s and Don’ts of Skill Tagging\n* Integrating Skill Tagging with Resumly’s Suite\n* Frequently Asked Questions (FAQs)\n* Mini‑Conclusion: The Core Takeaway\n* Next Steps: Put Skill Tagging into Action Today\n\nShare Article\n\n[f](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.resumly.ai%2Fblog%2Fthe-importance-of-skill-tagging-for-job-matching \"Facebook\") [x](https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.resumly.ai%2Fblog%2Fthe-importance-of-skill-tagging-for-job-matching&text=The%20Importance%20of%20Skill%20Tagging%20for%20Job%20Matching \"X\") [in](https://www.linkedin.\ncom/sharing/share-offsite/?url=https%3A%2F%2Fwww.resumly.ai%2Fblog%2Fthe-importance-of-skill-tagging-for-job-matching \"LinkedIn\")\n\n###### Back\n\n# The Importance of Skill Tagging for Job Matching\n\nPosted on October 07, 2025\n\nMichael Brown\n\nMichael Brown\n\nCareer & Resume Expert\n\nMichael Brown\n\nMichael Brown\n\nCareer & Resume Expert\n\nskill tagging job matching AI resume builder ATS optimization career automation resume tips job search strategies skill gap analysis employment trends Resumly\n\nThe Importance of Skill Tagging for Job Matching\n\n##### Table of Contents\n\n* Why Skill Tagging Matters More Than Ever\n* How Skill Tagging Works: A Step‑by‑Step Guide\n* Step 1: Identify Core Competencies\n* Step 2: Choose a Standardized Taxonomy\n* Step 3: Embed Tags in Your Resume\n* Step 4: Validate with an ATS Checker\n* Step 5: Leverage Automated Matching\n* Real‑World Example: From Generic to Tagged\n* Checklist: Perfect Skill Tagging\n* Do’s and Don’ts of Skill Tagging\n* Integrating Skill Tagging with Resumly’s Suite\n* Frequently Asked Questions (FAQs)\n* Mini‑Conclusion: The Core Takeaway\n* Next Steps: Put Skill Tagging into Action Today\n\nShare Article\n\n[f](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.resumly.ai%2Fblog%2Fthe-importance-of-skill-tagging-for-job-matching \"Facebook\") [x](https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.resumly.ai%2Fblog%2Fthe-importance-of-skill-tagging-for-job-matching&text=The%20Importance%20of%20Sk
+... [truncated]

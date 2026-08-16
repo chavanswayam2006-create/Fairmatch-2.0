@@ -1,0 +1,16 @@
+{
+  "name": "FairMatch AI",
+  "short_name": "FairMatch",
+  "description": "AI-Powered Job-Fit & Resume Improvement Assistant",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

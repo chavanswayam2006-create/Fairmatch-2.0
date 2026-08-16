@@ -1,0 +1,37 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_16-57-19.539794062_parallel_web_search_aa744ba1.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_4ffc996873f0e968daf60a5072ca8a25",
+  "results": [
+    {
+      "url": "https://www.brightmine.com/us/resources/hr-strategy/hr-technology/colorado-ai-law-regulates-ai-in-employment",
+      "title": "First-of-its-kind Colorado AI law regulates AI in employment",
+      "publish_date": "2026-02-05",
+      "excerpts": [
+        "com/us/resources/hr-strategy/hr-technology/) > First-of-its-kind Colorado AI law regulates AI in employment\n\n# First-of-its-kind Colorado AI law regulates AI in employment\n\nColorado has enacted new requirements for employers that use artificial intelligence (AI) in hiring, firing and other business decisions.\n\nPublished: May 20, 2024\n\nShare this:\n\nLinkedIn X Facebook Email\n\nby **Michael Cardman** , Senior Legal Editor at Brightmine\n\nColorado has enacted [new requirements](https://www.brightmine.com/us/solutions/reduce-compliance-risk/) for [employers that use artificial intelligence (AI)](https://www.brightmine.com/us/resources/blogs/ai-and-human-resources/) in hiring, firing and other business decisions.\n\n[SB24-20](https://leg.colorado.gov/bills/sb24-205) — which was signed into law on May 17 by Gov.\nJared Polis and takes effect February 1, 2026 — requires businesses that use AI to make consequential decisions to exercise reasonable care to protect Colorado residents from discrimination on the basis of race, sex, age and other protected characteristics. Failure to do so will be considered an unfair trade practice under Colorado law.\n\nBusinesses will be protected by a rebuttable presumption that they exercised reasonable care as long as they take certain actions, including:\n\n* Annually reviewing the AI to ensure it is not causing discrimination, and disclosing any discrimination to the state attorney general within 90 days of discovering it.\n* Implementing a risk-management policy and program for the AI.\n* Assessing the impact of the AI at least annually and 90 days after any substantial modification.\n* Notifying residents (which presumably includes employees and job applicants) of any consequential decisions made by the AI."
+      ]
+    },
+    {
+      "url": "https://siftfirst.com/compliance/eeoc-four-fifths-rule",
+      "title": "The Four-Fifths Rule Explained: Adverse Impact in AI Hiring (2026)",
+      "publish_date": "2026-07-06",
+      "excerpts": [
+        "... app) [Sign in](/login)\n\n[← AI hiring compliance](/compliance)\n\n# The Four-Fifths Rule: How to Check Your Hiring Process for Adverse Impact\n\n8 min read · Last reviewed 6 Jul 2026\n\nGeneral ... .\"\n\n## Key takeaways\n\n* ✓ The four-fifths rule flags ad"
+      ]
+    },
+    {
+      "url": "https://jbakerlawgroup.com/colorado-ai-law/",
+      "title": "Colorado AI Compliance Laws | Helping Employers Stay Compliant",
+      "publish_date": null,
+      "excerpts": [
+        "The CAIA addresses deploying high-risk ... insurance, and legal services. For employers, <strong>any AI system substantially impacting hiring, promotions, compensation, performance evaluations, or terminations falls under the Act&#x27;s jurisdiction</strong>."
+      ]
+    },
+    {
+      "url": "https://www.shrm.org/topics-tools/news/talent-acquisition/nyc-outlines-compliance-requirements-ai-bias-law",
+      "title": "NYC Outlines Compliance Requirements for AI Bias Law",
+      "publish_date": "2023-12-28",
+      "excerpts": [
+        "org/content/dam/en/shrm/membership/shrm-membership-benefits.pdf \"Membership Benefits\")\n* Learning\n  \n  back\n  \n  Learning\n  \n        + Learning\n        \n        Build capability, credibility, and confidence to influence strategy, shape culture, and drive measurable business impact.\n        \n        SHRM Certification\n        \n        Demonstrate your ability to apply HR principles to real-life situations.\n        \n        - Choosing Your Certification\n        - SHRM-CP\n        - SHRM-SCP\n        - How to Get Certified\n        - Prepare for the Exam\n        - Recertification\
+... [truncated]

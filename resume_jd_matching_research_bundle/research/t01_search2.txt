@@ -1,0 +1,21 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_16-40-06.761493016_parallel_web_search_f54fb873.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_b7c4cbaefdd9019a68a60697cede9cd3",
+  "results": [
+    {
+      "url": "https://github.com/warazkhan/PDF-Resume-Text-Extraction-Analysis-Framework",
+      "title": "GitHub - warazkhan/PDF-Resume-Text-Extraction-Analysis-Framework: Resume text extraction and analysis pipeline comparing multiple PDF extraction methods (PyMuPDF, PyPDF2, pdfplumber, OCR). The project includes quality validation, performance benchmarking, and statistical analysis of resume metrics, with visualizations for industry trends, text length, and skill frequencies. · GitHub",
+      "publish_date": null,
+      "excerpts": [
+        "* **Compare multiple PDF extraction methods:** PyMuPDF, PyPDF2, pdfplumber, OCR (Tesseract).\n* **Assess extraction quality:** Text accuracy, layout preservation, and handling of tables/images.\n* **Analyze resume characteristics:** Text length, word count, and distribution across industries.\n* **Benchmark performance:** Speed and accuracy trade-offs for different extraction techniques.\n* **Automate processing:** Develop a **smart extraction pipeline** with quality validation and error handling.\n\n* * *\n\n## 🗂 Dataset\n\n* **Size:** 2,484 resumes\n* **Categories:** 20+ job roles (e.g., IT, Healthcare, Finance)\n* **Content:** Extracted text with metadata (method used, industry, etc.)\n* **Structure:** Mixed formatting quality (scanned & text-based PDFs)\n\n* * *\n\n## 🏗 Extraction Pipeline\n\n1. **Multi-method parallel extraction:** Run multiple extraction methods simultaneously.\n2. **Quality validation checks:** Filter out empty/corrupted extracts.\n3.\n\n...\n\n* ✅ **4 extraction methods evaluated**\n\n* * *\n\n## 🔗 Future Enhancements:\n\n* Integrate **Named Entity Recognition (NER)** for skill & experience extraction.\n* Apply **Machine Learning** for resume classification & ranking.\n* Expand dataset to include more diverse resume formats.\n\n* * *\n\n## 🛠 Installation & Requirements\n\nInstall the required Python libraries:\n\n```shell\npip install PyMuPDF PyPDF2 pdfplumber pdfminer.six pytesseract pdf2image camelot-py[cv] pandas openpyxl\n```"
+      ]
+    },
+    {
+      "url": "https://mihcm.com/resources/blog/ai-resume-parser-enhance-applicant-data-accuracy",
+      "title": "AI resume parser: Boost accuracy and streamline recruitment | MiHCM",
+      "publish_date": "2025-12-10",
+      "excerpts": [
+        "## How AI resume parsers work: ML and NLP techniques\n\nThe AI resume parser pipeline consists of a parsing engine, named-entity recognition, and classification stages.\n\nThe parsing engine ingests unstructured resume documents—PDFs, DOCX, or images—and converts them into raw text. Next, Named-Entity Recognition (NER) models identify key sections such as contact information, work history, and education. Finally, classification algorithms map extracted entities to standardised fields, ready for ingestion into an applicant tracking system.\n\nInitial parsing engine components use OCR for scanned documents, converting images to text with character recognition accuracy above 95%. Preprocessing steps normalise font variations and remove noise. Metadata extraction captures document properties such as creation date and author information.\n\nOnce text is prepared, the NER stage leverages custom dictionaries and embedding-based taggers to locate entities.\n\n...\n\nVendors offering active learning frameworks enable rapid adaptation to niche requirements without compromising core performance.\n\nData quality and resume formats significantly influence parsing results. Uniformly structured resumes with clear headings yield higher precision, while unconventional layouts may reduce recall. OCR accuracy for scanned documents also impacts overall performance and feedback loops. Vendors often report benchmarks on standard datasets; real-world performance can vary based on applicant pool and document diversity.\n\nTo maintain high parsing reliability, organisations should track the following metrics:\n\n* 
+... [truncated]

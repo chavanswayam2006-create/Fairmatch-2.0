@@ -1,0 +1,21 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_16-59-49.433216429_parallel_web_search_ba797874.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_4348855c9e97dd05ee18b2357e54e3be",
+  "results": [
+    {
+      "url": "https://dl.acm.org/doi/fullHtml/10.1145/3617694.3623222",
+      "title": "Counterfactual Situation Testing: Uncovering Discrimination under Fairness given the Difference",
+      "publish_date": null,
+      "excerpts": [
+        "We present counterfactual situation testing (CST), <strong>a causal data mining framework for detecting individual discrimination in a dataset of classifier decisions. CST answers the question “what would have been the model outcome had the individual, or complainant, been of a different protected status?” in an actionable and meaningful way</strong>"
+      ]
+    },
+    {
+      "url": "https://www.visiontrainingsystems.com/blogs/evaluating-bias-and-fairness-in-ai-algorithms-techniques-and-metrics",
+      "title": "AI bias evaluation: Key techniques and metrics for fair",
+      "publish_date": "2026-04-25",
+      "excerpts": [
+        "Change a sensitive attribute in a controlled or synthetic example and see whether the prediction changes. If identical resumes receive different outcomes after only changing a gendered name, you have strong evidence of bias. Interpretability tools such as **SHAP** , **LIME** , and feature importance can then show which inputs are driving that behavior.\n\n> If changing only the sensitive attribute changes the decision, the model is not merely correlating data. It is encoding preference.\n> \n> \n\nThe [MITRE ATT&CK](https://attack.mitre.org/) framework is useful here because it shows how analysts structure complex adversarial behavior. Fairness analysis needs the same discipline: isolate variables, test systematically, and document what actually changed.\n\n## Mitigation Strategies And Fairness Interventions\n\nMitigation comes in three stages: pre-processing, in-processing, and post-processing. **Pre-processing** changes the data before training.\nThat can mean removing biased features, learning fair representations, or balancing training samples so the model sees more equitable input. This stage is often the least disruptive because it does not require changing the model architecture.\n\n**In-processing** methods modify the training process itself. Common examples include fairness constraints, adversarial debiasing, and regularization toward parity goals. These techniques are more powerful because they shape the optimization objective directly. They are also more complex to implement and tune, especially in production systems with strict latency or interpretability requirements.\n\n**Post-processing** methods act after the model predicts. Score adjustment, threshold optimization, and equalized odds post-processing can change decisions without retraining the model. This is useful when you cannot change the model easily, but it may be less transparent to stakeholders and harder to justify in regulated environments.\n\n...\n\n## Tools, Frameworks, And Practical Workflows\n\nThree widely used fairness toolkits are [Fairlearn](https://fairlearn.org/) , [IBM AI Fairness 360](https://aif360.res.ibm.com/) , and [Aequitas](https://aequitas.ml/) . Fairlearn is strong for metric comparison and mitigation in Python workflows. AI Fairness 360 offers a broad set of bias detection and mitigation algorithms. Aequitas is useful for audit-oriented analysis and bias reporting.\n\nA practical workflow looks like this: define fairness goals, audit the data, train a baseline model, compute fairness metrics, test slices, and iterate. That order matters. If you start with mitigation before establishing the baseline, you cannot prove improvement. If you skip slice testing, you may miss the subgroup that actually needs attention.\n\nUse dashboards and report templates to communicate findings. Technical teams need exact rates, thresholds, and confidence intervals. Business leaders need plain-language summaries tied to risk and impact.\n\n...\n\nIf a model affects employment, lending, housing, healthcare
+... [truncated]

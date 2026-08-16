@@ -1,0 +1,21 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_16-48-57.615105127_parallel_web_search_1aaf53f0.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_7f4e8ed098c12b14493d9ba009ff63f0",
+  "results": [
+    {
+      "url": "https://github.com/sachin-mahato25/resume-job-matcher",
+      "title": "GitHub - sachin-mahato25/resume-job-matcher: 🎯 AI-powered resume & job description matcher using Sentence Transformers (all-MiniLM-L6-v2), Cosine Similarity, and Streamlit. Features semantic matching, skills gap analysis, and resume improvement suggestions. · GitHub",
+      "publish_date": null,
+      "excerpts": [
+        "# sachin-mahato25/resume-job-matcher\n\n- Page: GitHub repository\n- URL: https://github.com/sachin-mahato25/resume-job-matcher\n- Description: 🎯 AI-powered resume &amp; job description matcher using Sentence Transformers (all-MiniLM-L6-v2), Cosine Similarity, and Streamlit. Features semantic matching, skills gap analysis, and resume impro...\n- Stars: 1\n- Forks: 0\n- Default branch: main\n- Created: 2026-06-11T15:18:06.000Z\n- Commits: 1\n\n## Top-level files\n\n- utils/\n- README.md\n- app.py\n- requirements.txt\n\n## README.md\n\n# 🎯 AI-Powered Resume–Job Matcher\n\n> An end-to-end NLP portfolio project that uses **Sentence Transformers** and **Cosine Similarity** to semantically match a resume against a job description — with skills gap analysis and improvement suggestions.\n> \n> \n\n[Python](https://camo.githubusercontent.\n\n...\n\ncom/337d43d278dc1f06e3cf0a33522dc1c7e14b84dff141d8cdc0ff62a8edb0667c/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f7363696b69742d2d6c6561726e2d312e342532422d4637393331453f7374796c653d666c61742d737175617265266c6f676f3d7363696b69746c6561726e) [License](https://camo.githubusercontent.com/152aa2a37725b9fd554b28ff24d270f6071c67927a63e6d635a55c8e188e20c7/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4c6963656e73652d4d49542d677265656e3f7374796c653d666c61742d737175617265)\n\n* * *\n\n## ✨ Features\n\n|Feature |Description |\n| --- | --- |\n|📄 PDF Resume Upload |Extracts text from any PDF resume using PyPDF2 |\n|🧠 Semantic Embeddings |Encodes resume & JD into 384-dim vectors via `all-MiniLM-L6-v2` |\n|📐 Cosine Similarity |Measures semantic closeness between the two documents |\n|🎯 Composite Match Score |70% semantic + 30% skill coverage weighted score |\n|🔍 Skill Extraction |Identifies 300+ technical & soft skills from both texts |\n|✅ Matching Skills |Shows skills present in both resume and job description |\n|❌ Missing Skills |Highlights required skills absent from your resume |\n|💡 AI Suggestions |9 categories of actionable resume improvement advice |\n|📊 Score Breakdown |Visual progress bars for semantic & skill sub-scores |\n|🎨 Modern Dark UI |Professional Streamlit interface with glassmorphism design |\n\n* * *\n\n## 🧠 ML Concepts Demonstrated\n\n* **Natural Language Processing (NLP)** — text extraction, cleaning, keyword matching\n* **Transformer Architecture** — using a pre-trained `all-MiniLM-L6-v2` model\n* **Sentence Embeddings** — mapping variable-length text to fixed-size dense vectors\n* **Semantic Similarity** — understanding meaning beyond exact keyword overlap\n* **Cosine Similarity** — geometric measure of vector alignment in embedding space\n* **Skill Graph Analysis** — set-based gap analysis between resume and JD\n\n* * *\n\n## 📁 Project Structure\n\n```\nresume-job-matcher/\n│\n├── app."
+      ]
+    },
+    {
+      "url": "https://huggingface.co/models?library=sentence-transformers&search=resume&sort=trending",
+      "title": "Models compatible with the sentence-transformers library – Hugging Face",
+      "publish_date": null,
+      "excerpts": [
+        "library=span-marker) [Graphcore](https://huggingface.co/models?library=optimum_graphcore) [paddlenlp](https://huggingface.co/models?library=paddlenlp) [unity-sentis](https://huggingface.co/models?library=unity-sentis) [DDUF](https://huggingface.co/models?library=dduf) [univa](https://huggingface.co/models?library=univa)\n\nApply filters\n\n# Models\n\n46\n\nBase only Inference Available Inference\n\nEdit filters\n\nSort: \
+... [truncated]

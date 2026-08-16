@@ -1,0 +1,21 @@
+Tool execution result saved to: /home/ubuntu/.mcp/tool-results/2026-08-15_16-59-37.547551759_parallel_web_search_2e1440bc.json
+MCP structured result captured for host processing.
+Tool execution result summary:
+{
+  "search_id": "search_1f0039274a856d774f19a5967f5484f2",
+  "results": [
+    {
+      "url": "https://study.com/academy/lesson/adverse-impact-in-hiring-detection-validation-bias-reduction.html",
+      "title": "Adverse Impact in Hiring: Detection, Validation & Bias Reduction | Study.com",
+      "publish_date": null,
+      "excerpts": [
+        "Moreover, organizations face substantial legal and financial risks when their hiring practices produce discriminatory outcomes, including costly litigation, regulatory penalties, and reputational damage that can affect their ability to attract top talent and customers significantly.\n\nTo unlock this lesson you must be a Study.com member Create an account\n\n## Detection Methods and the Four-Fifths Rule\n\nThe most widely used method for detecting adverse impact is the **four-fifths rule** , also known as the 80% rule, established by the Uniform Guidelines on Employee Selection Procedures. This statistical test compares the selection rates of different demographic groups by calculating whether the selection rate for any protected group is less than four-fifths (80%) of the selection rate for the group with the highest selection rate.\nWhen this threshold is not met, it suggests the presence of adverse impact that requires further investigation, potential justification, and appropriate action.\n\nApplying the four-fifths rule involves systematic data collection and analysis throughout the hiring process. Organizations must track applicant demographics, selection decisions at each stage, and final hiring outcomes to identify potential disparities. The calculation process requires determining selection rates for each group by dividing the number of individuals selected by the number who applied, then comparing these rates across groups. If the selection rate for any protected group falls below 80% of the highest group's rate, adverse impact is indicated.\n\nBeyond the four-fifths rule, organizations can employ additional statistical methods to detect adverse impact, including standard deviation analysis and chi-square tests."
+      ]
+    },
+    {
+      "url": "https://logicmelon.com/blog-post/adverse-impact",
+      "title": "Understanding Adverse Impact",
+      "publish_date": "2024-02-06",
+      "excerpts": [
+        "## Adverse Impact Definition\n\nAny policies or hiring practices in an organisation show a bias towards a candidate based on their age, race, and sex and do not offer them equal opportunity.\n\nOne important thing to notice is that adverse impacts can occur in various stages of employment. It can happen in hiring, appraisals, development, performance reviews, and promotions.\n\nIn most cases, an adverse impact is unintended due to a new hiring policy or a discrepancy in the [job advert](https://logicmelon.com/blog-post/tips-to-write-an-attractive-job-advert/) .\n\n## How to Calculate Adverse Impact\n\nTo calculate the adverse impact on your company policies or the recruitment in your organisation, use the 4/5 rule.\n\nFor instance, consider a male and female candidate ratio for a job role.\n\nAssume that 15 male candidates applied for the role, out of which 10 were selected for the job. While on the other hand, 10 female applicants were used for the job, and only 5 were selected.\n\n...\n\nBe sure that your description does not contain words and phrases that use gender-coded words or discriminatory language for a specific protected class.\n\nThe [job descriptions](https://logicmelon.com/blog-post/how-to-write-an-inclusive-job-description-for-your-client/) will have a considerable impact on the adverse impact. Also, stay mindful of using words that refer to experienced candidates. Encourage candidates with the mandatory skills to apply for the job role. Any other skills you might require and are good to have, mention them separately.\n\n### **Recruit from a Diverse Source**\n\nThe best way to reduce your adverse impact is to choose a more diverse set of candidates for your [
+... [truncated]

@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: fairmatch-db
+    environment:
+      POSTGRES_DB: fairmatch_db
+      POSTGRES_USER: fairmatch_user
+      POSTGRES_PASSWORD: fairmatch_secure_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fairmatch_user -d fairmatch_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fairmatch-backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: "postgresql://fairmatch_user:fairmatch_secure_password@postgres:5432/fairmatch_db"
+      CORS_ORIGINS: "*"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
