@@ -126,6 +126,25 @@ class MatchRunResponse(BaseModel):
     results: List[CandidateJobAnalysis]
     created_at: datetime
 
+
+class BiasAuditTriggerRequest(BaseModel):
+    score_gap_threshold: Optional[float] = Field(default=5.0, ge=0)
+
+
+class BiasAuditResponse(BaseModel):
+    audit_id: str
+    run_id: str
+    demographic_parity_diff: float
+    selection_rate_ratio: float
+    max_score_gap: float
+    flagged: bool
+    threshold: float
+    name_group_scores: Dict[str, float] = {}
+    university_tier_scores: Dict[str, float] = {}
+    employment_gap_scores: Dict[str, float] = {}
+    detailed_variants: List[Dict[str, Any]] = []
+    created_at: datetime
+
 # Run List Summary
 class RunSummary(BaseModel):
     run_id: str
@@ -133,3 +152,53 @@ class RunSummary(BaseModel):
     job_title: str
     candidate_count: int
     created_at: datetime
+
+# ============================================================
+# Job Library Schemas
+# ============================================================
+
+class JobLibraryItem(BaseModel):
+    id: str
+    slug: str
+    title: str
+    normalized_title: str
+    industry: str
+    seniority: str
+    location: str
+    country: str
+    employment_type: str
+    description: str
+    responsibilities: List[str] = []
+    required_skills: List[str] = []
+    preferred_skills: List[str] = []
+    tools: List[str] = []
+    education: str = ""
+    experience_years: float = 0.0
+    is_generic_profile: bool = True
+    source: str = ""
+    created_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+class JobLibraryListResponse(BaseModel):
+    total: int
+    page: int
+    limit: int
+    jobs: List[JobLibraryItem]
+    industries: List[str] = []
+    seniority_levels: List[str] = []
+
+class JobRecommendationItem(BaseModel):
+    job_id: str
+    slug: str
+    title: str
+    industry: str
+    seniority: str
+    matching_skills: List[str] = []
+    match_reason: str = ""
+
+
+class OccupationClassifyRequest(BaseModel):
+    title: str
+    job_description: Optional[str] = ""

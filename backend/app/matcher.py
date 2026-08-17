@@ -3,6 +3,24 @@ from typing import List, Dict, Any, Tuple
 from app.parser import extract_skills, extract_years_experience, extract_education, extract_seniority_level, extract_resume_sections
 from app.knowledge_graph import normalize_occupation_title, get_related_skills
 from app.rag_engine import RAGEngine
+from app.occupation_service import occupation_context_for_analysis
+
+
+def predict_match_score(
+    resume_text: str, resume_skills: List[str], resume_exp: float, resume_edu: str,
+    job_text: str, job_skills: List[str], job_exp: float, job_edu: str,
+) -> Dict[str, float]:
+    """Internal coverage signal for counterfactual robustness tests only.
+
+    It is not returned by the occupation analysis UI and must not be used to
+    rank or compare candidates. The application-facing analysis remains
+    evidence, gaps, and truthful recommendations.
+    """
+    requested = {skill.lower() for skill in job_skills}
+    demonstrated = {skill.lower() for skill in resume_skills}
+    skill_coverage = len(requested & demonstrated) / len(requested) if requested else 0.0
+    experience_coverage = min(resume_exp / job_exp, 1.0) if job_exp else 1.0
+    return {"final_score": round((skill_coverage * 0.8 + experience_coverage * 0.2) * 100, 2)}
 
 def extract_universal_job_requirements(raw_job: str, job_title: str) -> List[Dict[str, str]]:
     """Extract required, preferred, and contextual requirements from any job description."""
@@ -75,7 +93,10 @@ def analyze_job_fit(
     """
     # Step 1: Query RAG Engine for Occupation & Taxonomy Context
     rag_context = RAGEngine.retrieve_context_for_job(job_title, raw_job)
-    occ_info = rag_context["occupation_info"]
+    # ISCO is occupational context. If the imported knowledge layer can suggest
+    # a unit group, use it for contextual interpretation while retaining every
+    # employer-provided requirement in raw_job as the primary analysis source.
+    occ_info = occupation_context_for_analysis(job_title, raw_job) or rag_context["occupation_info"]
     seniority_level = extract_seniority_level(job_title, raw_job)
 
     job_context_data = {

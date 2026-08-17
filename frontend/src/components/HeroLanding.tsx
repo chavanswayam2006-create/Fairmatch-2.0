@@ -7,9 +7,10 @@ interface HeroLandingProps {
   onOpenAbout: () => void;
   onOpenPrivacy?: () => void;
   onOpenTerms?: () => void;
+  onExploreJobs?: () => void;
 }
 
-export const HeroLanding: React.FC<HeroLandingProps> = ({ onOpenDashboard, onOpenAbout, onOpenPrivacy, onOpenTerms }) => {
+export const HeroLanding: React.FC<HeroLandingProps> = ({ onOpenDashboard, onOpenAbout, onOpenPrivacy, onOpenTerms, onExploreJobs }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const easeCurve: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -69,8 +70,8 @@ export const HeroLanding: React.FC<HeroLandingProps> = ({ onOpenDashboard, onOpe
           {/* Nav Links (Desktop) */}
           <div className="nav-links" style={{ display: 'flex', gap: '18px', marginLeft: '12px' }}>
             <button onClick={onOpenAbout} style={{ background: 'none', border: 'none', fontSize: '13px', fontWeight: 500, color: '#333', cursor: 'pointer' }}>Platform Details</button>
-            <span style={{ fontSize: '13px', fontWeight: 500, color: '#666', userSelect: 'none' }}>Matching Engine</span>
-            <button onClick={onOpenDashboard} style={{ background: 'none', border: 'none', fontSize: '13px', fontWeight: 500, color: '#333', cursor: 'pointer' }}>Fairness Audit</button>
+            {onExploreJobs && <button onClick={onExploreJobs} style={{ background: 'none', border: 'none', fontSize: '13px', fontWeight: 500, color: '#333', cursor: 'pointer' }}>Explore Jobs</button>}
+            <button onClick={onOpenDashboard} style={{ background: 'none', border: 'none', fontSize: '13px', fontWeight: 500, color: '#333', cursor: 'pointer' }}>Start Analysis</button>
           </div>
 
           {/* Menu Button */}
@@ -276,22 +277,24 @@ export const HeroLanding: React.FC<HeroLandingProps> = ({ onOpenDashboard, onOpe
               <span>Start Job Analysis</span>
               <span>→</span>
             </button>
-            <button
-              onClick={onOpenAbout}
-              className="btn-outline"
-              style={{
-                backgroundColor: 'transparent',
-                color: '#000000',
-                border: '1px solid #d1d5db',
-                borderRadius: '9999px',
-                padding: '14px 24px',
-                fontSize: '14px',
-                fontWeight: 500,
-                cursor: 'pointer'
-              }}
-            >
-              Platform Details
-            </button>
+            {onExploreJobs && (
+              <button
+                onClick={onExploreJobs}
+                className="btn-outline"
+                style={{
+                  backgroundColor: 'transparent',
+                  color: '#000000',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '9999px',
+                  padding: '14px 24px',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  cursor: 'pointer'
+                }}
+              >
+                Explore Jobs
+              </button>
+            )}
           </motion.div>
         </div>
 
@@ -369,6 +372,14 @@ export const HeroLanding: React.FC<HeroLandingProps> = ({ onOpenDashboard, onOpe
                 >
                   Start Job Analysis →
                 </button>
+                {onExploreJobs && (
+                  <button
+                    onClick={() => { setMenuOpen(false); onExploreJobs(); }}
+                    style={{ textAlign: 'left', background: 'none', border: 'none', fontSize: '20px', fontWeight: 400, cursor: 'pointer', borderBottom: '1px solid #eee', paddingBottom: '12px' }}
+                  >
+                    Explore Jobs →
+                  </button>
+                )}
                 <button
                   onClick={() => { setMenuOpen(false); onOpenAbout(); }}
                   style={{ textAlign: 'left', background: 'none', border: 'none', fontSize: '20px', fontWeight: 400, cursor: 'pointer', borderBottom: '1px solid #eee', paddingBottom: '12px' }}

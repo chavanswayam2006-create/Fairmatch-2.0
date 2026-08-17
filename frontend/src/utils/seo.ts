@@ -29,6 +29,10 @@ const PAGE_META: Record<string, PageMeta> = {
     title: 'Terms of Service — FairMatch AI',
     description: 'Terms and conditions governing use of the FairMatch AI resume analysis platform, including AI content disclaimers.'
   },
+  'explore-jobs': {
+    title: 'Explore Global Jobs & Occupations — FairMatch AI',
+    description: 'Browse thousands of global job profiles and occupations across industries. Select a role and analyze your resume against its exact requirements.'
+  },
   '404': {
     title: 'Page Not Found — FairMatch AI',
     description: 'The page you requested could not be found. Return to the FairMatch AI homepage to continue.'

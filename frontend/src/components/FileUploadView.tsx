@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
-import { UploadCloud, FileText, Play, Plus, Trash2, AlertCircle, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { UploadCloud, FileText, Play, Plus, Trash2, AlertCircle, Loader2, Globe, Sparkles, X, Layers, MapPin } from 'lucide-react';
 import { analytics } from '../utils/analytics';
 
 interface FileUploadViewProps {
   onRunMatch: (jobId: string, resumeFiles: File[], rawResumesText: string[]) => void;
   isLoading: boolean;
+  libraryJob?: any;
+  onExploreJobs?: () => void;
+  onClearLibraryJob?: () => void;
 }
 
-export const FileUploadView: React.FC<FileUploadViewProps> = ({ onRunMatch, isLoading }) => {
+export const FileUploadView: React.FC<FileUploadViewProps> = ({
+  onRunMatch,
+  isLoading,
+  libraryJob,
+  onExploreJobs,
+  onClearLibraryJob
+}) => {
   const [jobTitle, setJobTitle] = useState('Senior Full-Stack AI Engineer');
   const [jobText, setJobText] = useState(`We are seeking an experienced Senior Full-Stack Engineer with 5+ years experience.
 Key Requirements:
@@ -20,6 +29,34 @@ Key Requirements:
   const [pastedResumes, setPastedResumes] = useState<string[]>([]);
   const [pastedInput, setPastedInput] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
+
+  // Sync state if a job was selected from the Global Job Library
+  useEffect(() => {
+    if (libraryJob) {
+      setJobTitle(libraryJob.title || libraryJob.normalized_title || 'Selected Job');
+      const reqsText = Array.isArray(libraryJob.required_skills) ? libraryJob.required_skills.join(', ') : '';
+      const prefText = Array.isArray(libraryJob.preferred_skills) ? libraryJob.preferred_skills.join(', ') : '';
+      const respText = Array.isArray(libraryJob.responsibilities) ? libraryJob.responsibilities.join('\n- ') : '';
+      
+      const fullText = `${libraryJob.description || ''}
+
+Industry: ${libraryJob.industry || 'General'}
+Seniority: ${libraryJob.seniority || 'Mid-Level'}
+Education: ${libraryJob.education || "Bachelor's"}
+
+Required Skills:
+${reqsText}
+
+Preferred Skills:
+${prefText}
+
+Key Responsibilities:
+- ${respText}`;
+
+      setJobText(fullText.trim());
+      setFormError(null);
+    }
+  }, [libraryJob]);
 
   const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -104,7 +141,7 @@ Key Requirements:
         </div>
       )}
 
-      {/* 1. Job Description Inputs */}
+      {/* 1. Job Description Inputs & Global Library Connection */}
       <div style={{
         backgroundColor: '#ffffff',
         border: '1px solid #e4e4e7',
@@ -114,7 +151,67 @@ Key Requirements:
         flexDirection: 'column',
         gap: '16px'
       }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 600 }}>1. Job Description</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 style={{ fontSize: '18px', fontWeight: 600 }}>1. Job Description</h3>
+          {onExploreJobs && (
+            <button
+              onClick={onExploreJobs}
+              type="button"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                backgroundColor: '#eff6ff',
+                color: '#1e40af',
+                border: '1px solid #bfdbfe',
+                padding: '6px 12px',
+                borderRadius: '9999px',
+                fontSize: '12px',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              <Globe size={13} color="#2563eb" /> Select from Job Library
+            </button>
+          )}
+        </div>
+
+        {/* Library Job Selected Badge Banner */}
+        {libraryJob && (
+          <div style={{
+            backgroundColor: '#f0fdf4',
+            border: '1px solid #bbf7d0',
+            borderRadius: '12px',
+            padding: '12px 16px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            fontSize: '13px',
+            color: '#166534'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Sparkles size={16} color="#166534" />
+              <div>
+                <strong>Selected from Job Library:</strong> {libraryJob.title} ({libraryJob.industry})
+              </div>
+            </div>
+            {onClearLibraryJob && (
+              <button
+                onClick={onClearLibraryJob}
+                title="Clear library selection and enter custom job description"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#166534',
+                  cursor: 'pointer',
+                  padding: '2px'
+                }}
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+        )}
         
         <div>
           <label htmlFor="job-title-input" style={{ fontSize: '12px', fontWeight: 600, color: '#555' }}>
@@ -154,7 +251,7 @@ Key Requirements:
             rows={10}
             value={jobText}
             onChange={e => { setJobText(e.target.value); setFormError(null); }}
-            placeholder="Paste role requirements, key skills, responsibilities, and qualifications..."
+            placeholder="Paste role requirements, key skills, responsibilities, and qualifications or select from Global Job Library..."
             aria-required="true"
             aria-invalid={!jobText.trim() || jobText.trim().length < 20}
             style={{
@@ -218,109 +315,123 @@ Key Requirements:
             />
             <label
               htmlFor="file-input-field"
-              className="btn-outline"
-              style={{ marginTop: '12px', fontSize: '12px', padding: '6px 14px', cursor: 'pointer' }}
+              style={{
+                display: 'inline-block',
+                marginTop: '12px',
+                padding: '6px 16px',
+                backgroundColor: '#ffffff',
+                border: '1px solid #d1d5db',
+                borderRadius: '6px',
+                fontSize: '12px',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
             >
               Browse Files
             </label>
           </div>
 
-          {/* Selected Files List */}
+          {/* Selected File Badges */}
           {resumeFiles.length > 0 && (
             <div style={{ marginBottom: '16px' }}>
               <div style={{ fontSize: '12px', fontWeight: 600, color: '#555', marginBottom: '6px' }}>
-                Uploaded File Resumes ({resumeFiles.length}):
+                Uploaded Resume Files ({resumeFiles.length}):
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '120px', overflowY: 'auto' }}>
-                {resumeFiles.map((file, idx) => (
-                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', padding: '6px 10px', backgroundColor: '#f4f4f6', borderRadius: '6px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {resumeFiles.map((f, i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f4f4f6', padding: '6px 12px', borderRadius: '6px', fontSize: '12px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <FileText size={14} />
-                      <span>{file.name}</span>
+                      <FileText size={14} color="#555" />
+                      <span>{f.name}</span>
                     </div>
-                    <button
-                      onClick={() => setResumeFiles(prev => prev.filter((_, i) => i !== idx))}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888' }}
-                      aria-label={`Remove file ${file.name}`}
-                    >
-                      <Trash2 size={12} />
-                    </button>
+                    <Trash2 size={14} color="#dc2626" style={{ cursor: 'pointer' }} onClick={() => setResumeFiles(prev => prev.filter((_, idx) => idx !== i))} />
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Option to Paste Text Resume */}
-          <div>
-            <label htmlFor="pasted-resume-input" style={{ fontSize: '12px', fontWeight: 600, color: '#555' }}>
+          {/* Paste Raw Text Resumes Section */}
+          <div style={{ borderTop: '1px solid #f4f4f6', paddingTop: '16px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: '#555', marginBottom: '6px' }}>
               Or Paste Resume Text
-            </label>
-            <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
-              <textarea
-                id="pasted-resume-input"
-                rows={3}
-                placeholder="Paste candidate resume plain text..."
-                value={pastedInput}
-                onChange={e => setPastedInput(e.target.value)}
-                style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #e4e4e7', fontSize: '12px' }}
-              />
-              <button
-                onClick={addPastedResume}
-                className="btn-outline"
-                style={{ alignSelf: 'flex-end', padding: '8px 12px' }}
-                aria-label="Add pasted resume text"
-              >
-                <Plus size={14} />
-              </button>
             </div>
-          </div>
-
-          {pastedResumes.length > 0 && (
-            <div style={{ fontSize: '11px', color: '#16a34a', marginTop: '6px', fontWeight: 500 }}>
-              ✓ {pastedResumes.length} plain text resumes queued
-            </div>
-          )}
-        </div>
-
-        {/* Action Button & Loading Skeleton */}
-        <div>
-          {isLoading ? (
-            <div style={{
-              backgroundColor: '#f4f4f6',
-              border: '1px solid #e4e4e7',
-              borderRadius: '12px',
-              padding: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px',
-              fontSize: '13px',
-              fontWeight: 600,
-              color: '#334155'
-            }}>
-              <Loader2 size={18} className="spin-animation" style={{ animation: 'spin 1s linear infinite' }} />
-              <span>Analyzing Job Requirements & Evidence...</span>
-              <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
-            </div>
-          ) : (
-            <button
-              onClick={handleStartMatching}
-              className="btn-black"
+            <textarea
+              rows={4}
+              value={pastedInput}
+              onChange={e => setPastedInput(e.target.value)}
+              placeholder="Paste candidate resume text here..."
               style={{
                 width: '100%',
-                justifyContent: 'center',
-                padding: '14px',
-                fontSize: '14px'
+                padding: '10px',
+                borderRadius: '8px',
+                border: '1px solid #e4e4e7',
+                fontSize: '12px',
+                fontFamily: 'inherit'
+              }}
+            />
+            <button
+              onClick={addPastedResume}
+              disabled={!pastedInput.trim()}
+              style={{
+                marginTop: '8px',
+                padding: '6px 14px',
+                backgroundColor: '#ffffff',
+                border: '1px solid #d1d5db',
+                borderRadius: '6px',
+                fontSize: '12px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
               }}
             >
-              <Play size={16} fill="white" />
-              <span>Start Job-Specific Analysis →</span>
+              <Plus size={14} /> Add Text Resume
             </button>
-          )}
+
+            {pastedResumes.length > 0 && (
+              <div style={{ marginTop: '12px', fontSize: '12px', color: '#166534', fontWeight: 600 }}>
+                ✓ {pastedResumes.length} text resume(s) added
+              </div>
+            )}
+          </div>
         </div>
 
+        {/* Start Job Analysis Action Button */}
+        <button
+          onClick={handleStartMatching}
+          disabled={isLoading}
+          style={{
+            width: '100%',
+            backgroundColor: '#000000',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '9999px',
+            padding: '14px',
+            fontSize: '15px',
+            fontWeight: 600,
+            cursor: isLoading ? 'not-allowed' : 'pointer',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+              <span>Analyzing Job Fit...</span>
+            </>
+          ) : (
+            <>
+              <Play size={16} fill="#fff" />
+              <span>Run Job-Specific Analysis</span>
+            </>
+          )}
+        </button>
       </div>
+
     </div>
   );
 };

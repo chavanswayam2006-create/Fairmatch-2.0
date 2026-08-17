@@ -2,18 +2,24 @@ import json
 import uuid
 from datetime import datetime
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Header, UploadFile, File, Form, status
+from fastapi import APIRouter, Depends, HTTPException, Header, UploadFile, File, Form, status, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 
 from app.database import (
-    get_db, JobDescriptionModel, ResumeModel, MatchRunModel, MatchResultModel, BiasAuditRunModel
+    get_db, JobDescriptionModel, ResumeModel, MatchRunModel, MatchResultModel, BiasAuditRunModel,
+    JobLibraryModel, OccupationsModel, ISCOMajorGroupModel, ISCOSubMajorGroupModel,
+    ISCOMinorGroupModel, ISCOUnitGroupModel, ISCOOccupationTaskModel, ISCOOccupationAliasModel
 )
 from app.schemas import (
     JobCreate, JobResponse, ResumeCreate, ResumeResponse, MatchRequest, MatchRunResponse,
-    CandidateJobAnalysis, RunSummary
+    CandidateJobAnalysis, RunSummary, BiasAuditResponse, BiasAuditTriggerRequest,
+    JobLibraryItem, JobLibraryListResponse, JobRecommendationItem, OccupationClassifyRequest
 )
 from app.parser import parse_document, extract_skills, extract_years_experience, extract_education, extract_candidate_name
 from app.matcher import analyze_job_fit
+from app.occupation_service import best_occupation, unit_hierarchy
+from app.bias_auditor import run_counterfactual_audit
 
 router = APIRouter(prefix="/api/v1")
 
@@ -396,3 +402,308 @@ def get_run_detail(run_id: str, db: Session = Depends(get_db)):
         results=res_items,
         created_at=r.created_at
     )
+
+# ============================================================
+# ISCO-08 occupation knowledge layer
+# ============================================================
+def _serialize_isco_group(group, level: int) -> dict:
+    parent = None
+    if level == 2:
+        parent = group.major_code
+    elif level == 3:
+        parent = group.sub_major_code
+    elif level == 4:
+        parent = group.minor_code
+    return {
+        "code": group.code, "title": group.title, "level": level, "parent_code": parent,
+        "definition": group.definition or "", "source_document": group.source_document,
+        "source_version": group.source_version, "source_type": group.source_type, "source_page": group.source_page,
+    }
+
+
+@router.get("/occupations")
+def list_occupations(
+    level: int = Query(1, ge=1, le=4),
+    parent_code: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    limit: int = Query(50, ge=1, le=100),
+    db: Session = Depends(get_db),
+):
+    model_by_level = {1: ISCOMajorGroupModel, 2: ISCOSubMajorGroupModel, 3: ISCOMinorGroupModel, 4: ISCOUnitGroupModel}
+    model = model_by_level[level]
+    query = db.query(model)
+    if parent_code:
+        parent_field = {2: "major_code", 3: "sub_major_code", 4: "minor_code"}.get(level)
+        if not parent_field:
+            raise HTTPException(status_code=400, detail="Major groups do not have a parent group.")
+        query = query.filter(getattr(model, parent_field) == parent_code)
+    total = query.count()
+    records = query.order_by(model.code).offset((page - 1) * limit).limit(limit).all()
+    return {"total": total, "page": page, "limit": limit, "items": [_serialize_isco_group(record, level) for record in records]}
+
+
+@router.get("/occupations/search")
+def search_occupations(
+    query: str = Query(..., min_length=1),
+    limit: int = Query(20, ge=1, le=50),
+    db: Session = Depends(get_db),
+):
+    term = f"%{query.strip()}%"
+    units = db.query(ISCOUnitGroupModel).filter(or_(
+        ISCOUnitGroupModel.title.ilike(term), ISCOUnitGroupModel.definition.ilike(term),
+        ISCOUnitGroupModel.included_occupations_raw.ilike(term),
+    )).order_by(ISCOUnitGroupModel.title).limit(limit).all()
+    alias_units = db.query(ISCOUnitGroupModel).join(
+        ISCOOccupationAliasModel, ISCOOccupationAliasModel.isco_code == ISCOUnitGroupModel.code
+    ).filter(ISCOOccupationAliasModel.occupation_title.ilike(term)).limit(limit).all()
+    seen = {unit.code for unit in units}
+    units.extend(unit for unit in alias_units if unit.code not in seen)
+    semantic = best_occupation(query, db, limit=limit)
+    by_code = {unit.code: unit for unit in units}
+    for suggestion in semantic:
+        unit = db.get(ISCOUnitGroupModel, suggestion["code"])
+        if unit:
+            by_code.setdefault(unit.code, unit)
+    # Keep source-text matches, but put contextual title/definition retrieval
+    # first so broad queries do not bury their best ISCO unit group.
+    ordered_codes = [suggestion["code"] for suggestion in semantic] + [code for code in by_code if code not in {s["code"] for s in semantic}]
+    items = []
+    for code in ordered_codes[:limit]:
+        unit = by_code[code]
+        item = _serialize_isco_group(unit, 4)
+        item["hierarchy"] = unit_hierarchy(unit, db)
+        items.append(item)
+    return {"query": query, "total": len(items), "items": items}
+
+
+@router.post("/occupations/classify-job")
+def classify_job(request: OccupationClassifyRequest, db: Session = Depends(get_db)):
+    # Suggestions are intentionally non-absolute. A custom JD remains the primary analysis source.
+    return {"title": request.title, "suggestions": best_occupation(f"{request.title} {request.job_description}", db)}
+
+
+@router.get("/occupations/{code}/tasks")
+def occupation_tasks(code: str, db: Session = Depends(get_db)):
+    if not db.get(ISCOUnitGroupModel, code):
+        raise HTTPException(status_code=404, detail="This occupation record is currently unavailable.")
+    return {"code": code, "tasks": [
+        {"task_type": task.task_type, "task_text": task.task_text, "source_page": task.source_page}
+        for task in db.query(ISCOOccupationTaskModel).filter_by(isco_code=code).all()
+    ]}
+
+
+@router.get("/occupations/{code}")
+def occupation_detail(code: str, db: Session = Depends(get_db)):
+    unit = db.get(ISCOUnitGroupModel, code)
+    if not unit:
+        raise HTTPException(status_code=404, detail="This occupation record is currently unavailable.")
+    item = _serialize_isco_group(unit, 4)
+    item.update({
+        "hierarchy": unit_hierarchy(unit, db),
+        "main_tasks": [task.task_text for task in db.query(ISCOOccupationTaskModel).filter_by(isco_code=code).all()],
+        "included_occupations": [alias.occupation_title for alias in db.query(ISCOOccupationAliasModel).filter_by(isco_code=code).all()],
+        "excluded_occupations": unit.excluded_occupations_raw or "",
+        "notes": unit.notes or "",
+    })
+    return item
+
+
+# ----------------------------------------------------
+# Analyze a resume against a specific ISCO unit group
+# ----------------------------------------------------
+@router.post("/occupations/{code}/analyze")
+def analyze_resume_against_isco(
+    code: str,
+    resume_id: Optional[str] = Form(None),
+    raw_text: Optional[str] = Form(None),
+    candidate_name: Optional[str] = Form(None),
+    db: Session = Depends(get_db),
+):
+    unit = db.get(ISCOUnitGroupModel, code)
+    if not unit:
+        raise HTTPException(status_code=404, detail="This occupation record is currently unavailable.")
+
+    # Obtain resume text
+    if resume_id:
+        res = db.query(ResumeModel).filter(ResumeModel.id == resume_id).first()
+        if not res:
+            raise HTTPException(status_code=404, detail="Resume not found")
+        resume_text = res.raw_text
+        res_skills = json.loads(res.skills)
+        res_exp = res.years_experience
+        res_edu = res.education_level
+        cand_name = res.candidate_name
+    elif raw_text:
+        resume_text = raw_text
+        res_skills = extract_skills(raw_text)
+        res_exp = extract_years_experience(raw_text)
+        res_edu, _ = extract_education(raw_text)
+        cand_name = candidate_name or "Candidate"
+    else:
+        raise HTTPException(status_code=400, detail="Provide either a resume_id or raw_text for analysis.")
+
+    # Build a job-context from the ISCO unit-group definition and tasks
+    job_title = f"ISCO-08 Unit Group {unit.code} — {unit.title}"
+    parts = [unit.definition or ""]
+    tasks = [t.task_text for t in db.query(ISCOOccupationTaskModel).filter_by(isco_code=code).all()]
+    if tasks:
+        parts.append('\n\nMain tasks:\n' + '\n'.join(tasks))
+    included = [a.occupation_title for a in db.query(ISCOOccupationAliasModel).filter_by(isco_code=code).all()]
+    if included:
+        parts.append('\n\nIncluded occupations / examples:\n' + '; '.join(included))
+
+    raw_job = '\n\n'.join(parts)
+
+    # Run the existing analyzer (it will treat the ISCO context cautiously)
+    analysis = analyze_job_fit(
+        resume_text, res_skills, res_exp, res_edu,
+        raw_job, [], 0.0, "",
+        job_title
+    )
+
+    return {
+        "occupation_code": code,
+        "occupation_title": unit.title,
+        "candidate_name": cand_name,
+        "analysis": analysis
+    }
+
+# ============================================================
+# 8. GET /api/v1/job-library — Search & Filter Global Job Library
+# ============================================================
+def _serialize_job_library(job: JobLibraryModel) -> JobLibraryItem:
+    """Convert a JobLibraryModel ORM instance into a JobLibraryItem Pydantic model."""
+    return JobLibraryItem(
+        id=job.id,
+        slug=job.slug or "",
+        title=job.title,
+        normalized_title=job.normalized_title or job.title,
+        industry=job.industry,
+        seniority=job.seniority or "Mid-Level",
+        location=job.location or "Global",
+        country=job.country or "Global",
+        employment_type=job.employment_type or "Full-time",
+        description=job.description or "",
+        responsibilities=json.loads(job.responsibilities) if job.responsibilities else [],
+        required_skills=json.loads(job.required_skills) if job.required_skills else [],
+        preferred_skills=json.loads(job.preferred_skills) if job.preferred_skills else [],
+        tools=json.loads(job.tools) if job.tools else [],
+        education=job.education or "",
+        experience_years=job.experience_years or 0.0,
+        is_generic_profile=job.is_generic_profile if job.is_generic_profile is not None else True,
+        source=job.source or "",
+        created_at=job.created_at
+    )
+
+
+@router.get("/job-library", response_model=JobLibraryListResponse)
+def search_job_library(
+    query: Optional[str] = Query(None, description="Search jobs by title, skill, or keyword"),
+    industry: Optional[str] = Query(None, description="Filter by industry"),
+    seniority: Optional[str] = Query(None, description="Filter by seniority level"),
+    employment_type: Optional[str] = Query(None, description="Filter by employment type"),
+    country: Optional[str] = Query(None, description="Filter by country"),
+    page: int = Query(1, ge=1, description="Page number"),
+    limit: int = Query(20, ge=1, le=100, description="Results per page"),
+    db: Session = Depends(get_db)
+):
+    q = db.query(JobLibraryModel)
+
+    # Keyword search across title, description, required_skills, preferred_skills
+    if query:
+        search_term = f"%{query.strip()}%"
+        q = q.filter(
+            (JobLibraryModel.title.ilike(search_term)) |
+            (JobLibraryModel.normalized_title.ilike(search_term)) |
+            (JobLibraryModel.description.ilike(search_term)) |
+            (JobLibraryModel.required_skills.ilike(search_term)) |
+            (JobLibraryModel.preferred_skills.ilike(search_term)) |
+            (JobLibraryModel.industry.ilike(search_term))
+        )
+
+    if industry:
+        q = q.filter(JobLibraryModel.industry.ilike(f"%{industry}%"))
+    if seniority:
+        q = q.filter(JobLibraryModel.seniority.ilike(f"%{seniority}%"))
+    if employment_type:
+        q = q.filter(JobLibraryModel.employment_type.ilike(f"%{employment_type}%"))
+    if country:
+        q = q.filter(JobLibraryModel.country.ilike(f"%{country}%"))
+
+    total = q.count()
+    offset = (page - 1) * limit
+    jobs = q.order_by(JobLibraryModel.title).offset(offset).limit(limit).all()
+
+    # Compute available filter options from full database
+    all_industries = [r[0] for r in db.query(JobLibraryModel.industry).distinct().all() if r[0]]
+    all_seniority = [r[0] for r in db.query(JobLibraryModel.seniority).distinct().all() if r[0]]
+
+    return JobLibraryListResponse(
+        total=total,
+        page=page,
+        limit=limit,
+        jobs=[_serialize_job_library(j) for j in jobs],
+        industries=sorted(all_industries),
+        seniority_levels=sorted(all_seniority)
+    )
+
+
+# ============================================================
+# 9. GET /api/v1/job-library/{id_or_slug} — Job Details
+# ============================================================
+@router.get("/job-library/{id_or_slug}", response_model=JobLibraryItem)
+def get_job_library_detail(id_or_slug: str, db: Session = Depends(get_db)):
+    job = db.query(JobLibraryModel).filter(
+        (JobLibraryModel.id == id_or_slug) | (JobLibraryModel.slug == id_or_slug)
+    ).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job profile not found in library.")
+    return _serialize_job_library(job)
+
+
+# ============================================================
+# 10. POST /api/v1/jobs/recommend — Recommend jobs by resume skills
+# ============================================================
+@router.post("/jobs/recommend", response_model=List[JobRecommendationItem])
+def recommend_jobs_for_resume(
+    resume_text: str = Form(...),
+    top_n: int = Form(5),
+    db: Session = Depends(get_db)
+):
+    resume_skills = extract_skills(resume_text)
+    resume_skills_lower = {s.lower() for s in resume_skills}
+
+    all_jobs = db.query(JobLibraryModel).all()
+    scored: List[dict] = []
+
+    for job in all_jobs:
+        job_required = json.loads(job.required_skills) if job.required_skills else []
+        job_preferred = json.loads(job.preferred_skills) if job.preferred_skills else []
+        all_job_skills = job_required + job_preferred
+        all_job_skills_lower = {s.lower() for s in all_job_skills}
+
+        overlap = resume_skills_lower & all_job_skills_lower
+        if len(overlap) > 0:
+            matching_display = [s for s in resume_skills if s.lower() in overlap]
+            scored.append({
+                "job": job,
+                "overlap_count": len(overlap),
+                "matching_skills": matching_display[:6],
+                "match_reason": f"Resume demonstrates evidence in {len(overlap)} relevant skill areas for this role."
+            })
+
+    scored.sort(key=lambda x: x["overlap_count"], reverse=True)
+    top_results = scored[:top_n]
+
+    return [
+        JobRecommendationItem(
+            job_id=item["job"].id,
+            slug=item["job"].slug or "",
+            title=item["job"].title,
+            industry=item["job"].industry,
+            seniority=item["job"].seniority or "Mid-Level",
+            matching_skills=item["matching_skills"],
+            match_reason=item["match_reason"]
+        )
+        for item in top_results
+    ]

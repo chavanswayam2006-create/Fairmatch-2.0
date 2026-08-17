@@ -486,6 +486,60 @@ export const ResumeAnalysisView: React.FC<ResumeAnalysisViewProps> = ({ runData 
         </div>
       </div>
 
+      {/* 8. Potentially Relevant Roles Based on Demonstrated Evidence */}
+      <div style={{
+        backgroundColor: '#ffffff',
+        border: '1px solid #e4e4e7',
+        borderRadius: '18px',
+        padding: '24px 28px'
+      }}>
+        <h3 style={{ fontSize: '17px', fontWeight: 600, color: '#000', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Globe size={18} color="#2563eb" />
+          Potentially Relevant Roles Based on Demonstrated Evidence
+        </h3>
+        <p style={{ fontSize: '12px', color: '#666', marginBottom: '20px' }}>
+          These alternative occupations align with skills and qualifications demonstrated in your resume. Use these insights to explore career pathways—not candidate ranking.
+        </p>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+          <div style={{ backgroundColor: '#fafafa', border: '1px solid #e4e4e7', borderRadius: '14px', padding: '18px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: '#09090b', marginBottom: '4px' }}>
+              {jobContext.normalized_occupation || jobTitle}
+            </div>
+            <div style={{ fontSize: '11px', color: '#2563eb', fontWeight: 600, marginBottom: '8px' }}>
+              Primary Target Occupation ({jobContext.industry})
+            </div>
+            <div style={{ fontSize: '12px', color: '#555', lineHeight: 1.5 }}>
+              Current target role alignment: <strong>{jobAlignment.requirement_coverage}</strong> across key requirements.
+            </div>
+          </div>
+
+          <div style={{ backgroundColor: '#fafafa', border: '1px solid #e4e4e7', borderRadius: '14px', padding: '18px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: '#09090b', marginBottom: '4px' }}>
+              Systems & Data Engineer
+            </div>
+            <div style={{ fontSize: '11px', color: '#166534', fontWeight: 600, marginBottom: '8px' }}>
+              Adjacent Career Opportunity
+            </div>
+            <div style={{ fontSize: '12px', color: '#555', lineHeight: 1.5 }}>
+              Strong demonstrated overlap in technical architecture, database systems, and backend development.
+            </div>
+          </div>
+
+          <div style={{ backgroundColor: '#fafafa', border: '1px solid #e4e4e7', borderRadius: '14px', padding: '18px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: '#09090b', marginBottom: '4px' }}>
+              Technical Product Specialist
+            </div>
+            <div style={{ fontSize: '11px', color: '#6b21a8', fontWeight: 600, marginBottom: '8px' }}>
+              Cross-Functional Option
+            </div>
+            <div style={{ fontSize: '12px', color: '#555', lineHeight: 1.5 }}>
+              Relevant evidence in technical communication, requirement execution, and product delivery.
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };

@@ -8,11 +8,14 @@ import { normalizeMatchRunResponse, NormalizedMatchRunResponse } from '../utils/
 interface FairMatchDashboardProps {
   onBackToHero: () => void;
   onOpenAbout: () => void;
+  onExploreJobs?: () => void;
+  libraryJob?: any;
+  onClearLibraryJob?: () => void;
 }
 
 export type WorkflowStep = 'idle' | 'testing' | 'decoding' | 'analyzing' | 'building' | 'success' | 'error';
 
-export const FairMatchDashboard: React.FC<FairMatchDashboardProps> = ({ onBackToHero, onOpenAbout }) => {
+export const FairMatchDashboard: React.FC<FairMatchDashboardProps> = ({ onBackToHero, onOpenAbout, onExploreJobs, libraryJob, onClearLibraryJob }) => {
   const [activeTab, setActiveTab] = useState<'upload' | 'results' | 'history'>('upload');
   const [workflowState, setWorkflowState] = useState<WorkflowStep>('idle');
   const [workflowError, setWorkflowError] = useState<string | null>(null);
@@ -266,7 +269,7 @@ export const FairMatchDashboard: React.FC<FairMatchDashboardProps> = ({ onBackTo
         )}
 
         {activeTab === 'upload' && (
-          <FileUploadView onRunMatch={handleRunMatch} isLoading={isProcessing} />
+          <FileUploadView onRunMatch={handleRunMatch} isLoading={isProcessing} libraryJob={libraryJob} onExploreJobs={onExploreJobs} onClearLibraryJob={onClearLibraryJob} />
         )}
 
         {activeTab === 'results' && currentRunData && (
