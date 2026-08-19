@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "build:widget": "tsc && vite build --config vite.widget.config.ts",
+    "build": "vite build",
+    "build:widget": "vite build --config vite.widget.config.ts",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "preview": "vite preview"
   },
