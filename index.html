@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FairMatch AI — Job-Specific Resume Analysis & Fairness Auditing</title>
+  <title>Vesper.ai — Operational AI Infrastructure</title>
   
   <!-- Favicon URI (Scale / Balance Symbol) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cg transform='rotate(-30 12 12)'%3E%3Ccircle cx='7.3' cy='3.2' r='1.45'/%3E%3Crect x='5.5' y='4.7' width='3.6' height='14.6' rx='1.8'/%3E%3Crect x='14.9' y='4.7' width='3.6' height='14.6' rx='1.8'/%3E%3Ccircle cx='16.7' cy='20.8' r='1.45'/%3E%3C/g%3E%3C/svg%3E">
@@ -128,6 +128,18 @@
       grid-template-rows: auto 1fr auto;
       min-height: 100vh;
       min-height: 100dvh;
+    }
+
+    /* Spiral canvas sits above hero-photo and behind .page */
+    #spiral-canvas.spiral {
+      position: fixed;
+      inset: 0;
+      z-index: 0; /* between hero-photo (0) and .page (1); DOM order places it above hero-photo */
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.22;
+      mix-blend-mode: screen;
     }
 
     /* Header 3-Column Grid */
@@ -911,7 +923,10 @@
   <div class="grain"></div>
 
   <!-- Background Photo / Scrim -->
-  <div class="hero-photo"></div>
+    <div class="hero-photo"></div>
+
+  <!-- Spiral Wave Particle Background (canvas between hero-photo and .page) -->
+  <canvas id="spiral-canvas" class="spiral" aria-hidden="true"></canvas>
 
   <!-- Page Shell -->
   <div class="page">
@@ -920,7 +935,7 @@
 
     <!-- Header Grid -->
     <header class="header">
-      <div class="logo appear appear--scale" style="--d: 0.08s;" onclick="location.href='#top'" aria-label="FairMatch AI">
+      <div class="logo appear appear--scale" style="--d: 0.08s;" onclick="location.href='#top'" aria-label="Vesper.ai">
         <svg class="logo-mark" viewBox="0 0 24 24">
           <g transform="rotate(-30 12 12)">
             <circle cx="7.3" cy="3.2" r="1.45"/>
@@ -929,17 +944,18 @@
             <circle cx="16.7" cy="20.8" r="1.45"/>
           </g>
         </svg>
-        <span>FairMatch<span class="logo-suffix">.ai</span></span>
+        <span>Vesper<span class="logo-suffix">.ai</span></span>
       </div>
 
       <nav id="site-nav" aria-label="Primary">
-        <button class="nav-pill appear appear--scale" style="--d: 0.16s;" onclick="openModal('arch-modal')">Architecture</button>
-        <button class="nav-pill appear appear--soft" style="--d: 0.28s;" onclick="openModal('matcher-modal')">Evidence Analyzer</button>
+        <button class="nav-pill appear appear--scale" style="--d: 0.16s;" onclick="openModal('arch-modal')">Platform Details</button>
+        <button class="nav-pill appear appear--soft" style="--d: 0.28s;" onclick="openModal('matcher-modal')">Transformer</button>
         <button class="nav-pill appear appear--scale" style="--d: 0.40s;" onclick="openModal('audit-modal')">Bias Audit</button>
-        <button class="nav-pill appear appear--soft" style="--d: 0.52s;" onclick="openModal('taxonomy-modal')">Job Taxonomy</button>
+        <button class="nav-pill appear appear--soft" style="--d: 0.52s;" onclick="openModal('help-modal')">Help</button>
+        <button class="nav-pill appear appear--soft" style="--d: 0.64s;" onclick="openModal('taxonomy-modal')">Contact</button>
       </nav>
 
-      <button class="btn btn-solid header-cta appear appear--scale" style="--d: 0.34s;" onclick="openModal('matcher-modal')">Launch Engine</button>
+      <!-- Header CTA removed per spec (no Launch Engine) -->
 
       <button class="burger appear appear--scale" id="burger-btn" style="--d: 0.34s;" aria-controls="site-nav" aria-expanded="false" aria-label="Open menu">
         <span class="burger-bar"></span>
@@ -955,21 +971,21 @@
           <svg width="18" height="20" viewBox="0 0 24 24" fill="white" class="badge-star">
             <path d="M12 2.6C12.55 2.6 12.88 3.15 13.08 4.7c.62 4.7 1.52 5.6 6.22 6.22 1.55.2 2.1.53 2.1 1.08s-.55.88-2.1 1.08c-4.7.62-5.6 1.52-6.22 6.22-.2 1.55-.53 2.1-1.08 2.1s-.88-.55-1.08-2.1c-.62-4.7-1.52-5.6-6.22-6.22C3.15 12.88 2.6 12.55 2.6 12s.55-.88 2.1-1.08c4.7-.62 5.6-1.52 6.22-6.22C11.12 3.15 11.45 2.6 12 2.6Z"/>
           </svg>
-          Job-Specific AI & Fairness Auditing
+          Operational AI Infrastructure
         </div>
 
         <h1 class="hero-h1">
-          <span class="headline-line appear appear--mask" style="--d: 0.42s;">Analyze <em>resumes & JDs</em> with</span>
-          <span class="headline-line appear appear--mask" style="--d: 0.62s;">unbiased precision in seconds.</span>
+          <span class="headline-line appear appear--mask" style="--d: 0.42s;">Train <em>AI agents</em> on your</span>
+          <span class="headline-line appear appear--mask" style="--d: 0.62s;">workflows in minutes.</span>
         </h1>
 
         <p class="lede appear appear--soft" style="--d: 0.82s; animation-duration: 1.25s;">
-          Transparent, evidence-based candidate matching with SHAP explainability and counterfactual bias auditing — no arbitrary rankings or black-box scores.
+          Deploy adaptive AI agents that learn, execute, and scale operational tasks across your business.
         </p>
 
         <div class="hero-actions">
-          <button class="btn btn-solid appear appear--btn" style="--d: 0.96s;" onclick="openModal('matcher-modal')">Launch Matcher Demo</button>
-          <button class="btn btn-ghost appear appear--side" style="--d: 1.10s;" onclick="openModal('taxonomy-modal')">Explore Job Taxonomy</button>
+          <button class="btn btn-solid appear appear--btn" style="--d: 0.96s;" onclick="openModal('matcher-modal')">Start for Free</button>
+          <button class="btn btn-ghost appear appear--side" style="--d: 1.10s;" onclick="openModal('taxonomy-modal')">Contact</button>
         </div>
       </div>
     </main>
@@ -977,48 +993,28 @@
     <!-- Stats Footer -->
     <footer class="stats">
       <div class="stat appear appear--stat" style="--d: 1.12s;">
-        <svg width="20" height="20" viewBox="0 0 24 24" class="stat-icon">
-          <defs>
-            <linearGradient id="grad-left" x1="0.12" y1="0.09" x2="0.58" y2="0.91">
-              <stop offset="0" stop-color="#ffffff" stop-opacity="0.38"/>
-              <stop offset="1" stop-color="#3a3a3a" stop-opacity="0.62"/>
-            </linearGradient>
-            <linearGradient id="grad-right" x1="0.12" y1="0.09" x2="0.58" y2="0.91">
-              <stop offset="0" stop-color="#3a3a3a" stop-opacity="0.38"/>
-              <stop offset="1" stop-color="#ffffff" stop-opacity="0.62"/>
-            </linearGradient>
-          </defs>
-          <rect x="3.4" y="2.6" width="7.2" height="18.8" rx="3.6" fill="url(#grad-left)"/>
-          <rect x="13.4" y="2.6" width="7.2" height="18.8" rx="3.6" fill="url(#grad-right)"/>
-          <rect x="9.2" y="10.9" width="5.6" height="2.2" rx="1.1" fill="#4a4a4a"/>
+        <svg width="20" height="20" viewBox="0 0 24 24" class="stat-icon" aria-hidden="true">
+          <rect x="3" y="3" width="7" height="18" rx="2.5" fill="#d8d8d8" opacity="0.9"/>
+          <rect x="14" y="3" width="7" height="18" rx="2.5" fill="#9a9a9a" opacity="0.9"/>
         </svg>
-        <span>4.2M+ candidate matches evaluated</span>
+        <span>4.2M+ workflows automated</span>
       </div>
 
       <div class="stat appear appear--stat" style="--d: 1.28s;">
-        <svg width="20" height="20" viewBox="0 0 24 24" class="stat-icon">
-          <rect x="2.4" y="2.4" width="19.2" height="19.2" rx="6.2" fill="#ffffff"/>
-          <path d="M12 7.1v7.4M8.15 12.35L12 16.2l3.85-3.85" stroke="#111111" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <svg width="20" height="20" viewBox="0 0 24 24" class="stat-icon" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="4" fill="#ffffff" opacity="0.95"/>
+          <path d="M12 7.5v6.5M9 11.5L12 14.5l3-3" stroke="#111" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
         </svg>
-        <span>92% reduction in audit bias variance</span>
+        <span>92% reduction in manual operations</span>
       </div>
 
       <div class="stat appear appear--stat" style="--d: 1.44s;">
-        <svg width="38" height="21" viewBox="0 0 40 22" class="stat-icon-wide">
-          <circle cx="10.2" cy="11" r="9.2" fill="#2b2b2b"/>
-          <ellipse cx="10.2" cy="12.1" rx="4.15" ry="3.7" fill="#f4f4f4"/>
-          <path d="M7.5 7.5L9 9.5M12.9 7.5L11.4 9.5" stroke="#2b2b2b" stroke-width="0.8" stroke-linecap="round"/>
-          <circle cx="8.9" cy="11.2" r="0.7" fill="#1a1a1a"/>
-          <circle cx="11.5" cy="11.2" r="0.7" fill="#1a1a1a"/>
-          <circle cx="20.2" cy="11" r="9.2" fill="#ffffff"/>
-          <circle cx="17.7" cy="9.8" r="1.7" fill="#111111"/>
-          <circle cx="22.7" cy="9.8" r="1.7" fill="#111111"/>
-          <ellipse cx="20.2" cy="12.5" rx="1.1" ry="0.8" fill="#111111"/>
-          <path d="M17.8 14.2c1.2 1.4 3.6 1.4 4.8 0" stroke="#111111" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-          <circle cx="30.2" cy="11" r="9.2" fill="#f26b1d"/>
-          <text x="30.2" y="15.1" font-family="Inter, sans-serif" font-size="12.5" font-weight="700" text-anchor="middle" fill="#ffffff">e</text>
+        <svg width="20" height="20" viewBox="0 0 24 24" class="stat-icon" aria-hidden="true">
+          <circle cx="6" cy="12" r="4" fill="#2b2b2b"/>
+          <circle cx="12" cy="12" r="4" fill="#ffffff"/>
+          <circle cx="18" cy="12" r="4" fill="#9a9a9a"/>
         </svg>
-        <span>180+ enterprise HR teams onboarded</span>
+        <span>180+ operational teams onboarded</span>
       </div>
     </footer>
   </div>
@@ -1029,8 +1025,17 @@
   <div class="fairmatch-modal-overlay" id="matcher-modal">
     <div class="fairmatch-modal-card">
       <button class="modal-close-btn" onclick="closeModal('matcher-modal')">&times;</button>
-      <h2 style="font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">FairMatch Evidence Analyzer</h2>
-      <p style="color: #9a9a9a; font-size: 14.5px; margin-bottom: 20px;">Upload a candidate resume and job description to run real-time SHAP explainability and counterfactual bias auditing.</p>
+      <h2 style="font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">Transformer</h2>
+      <p style="color: #9a9a9a; font-size: 14.5px; margin-bottom: 20px;">The Transformer helps clients rewrite and tailor resumes to specific job descriptions using ISCO-08 and O*NET occupational classification standards.</p>
+
+      <div style="display:flex; flex-direction:column; gap:10px; font-size:13.5px; color:#d8d8d8;">
+        <p><strong style="color:#fff;">How it works:</strong></p>
+        <ul style="margin-left:16px; color:#d8d8d8;">
+          <li>Maps job tasks to ISCO-08 / O*NET role elements to identify core skills.</li>
+          <li>Suggests resume rewrites that surface role-aligned skills and evidence.</li>
+          <li>Preserves applicant authenticity while optimizing for evidence coverage.</li>
+        </ul>
+      </div>
 
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
         <div>
@@ -1043,6 +1048,38 @@
             <div style="font-size: 11.5px; color: #9a9a9a; margin-top: 4px;">Loaded: Senior_Fullstack_Engineer.pdf</div>
           </div>
         </div>
+
+          <!-- Help Modal (new content for 'Help' nav) -->
+          <div class="fairmatch-modal-overlay" id="help-modal">
+            <div class="fairmatch-modal-card">
+              <button class="modal-close-btn" onclick="closeModal('help-modal')">&times;</button>
+              <h2 style="font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">Help</h2>
+              <p style="color: #9a9a9a; font-size: 14.5px; margin-bottom: 12px;">Quick reference to product features and how they help your team.</p>
+
+              <div style="display: grid; gap: 12px; font-size: 13.5px; color: #d8d8d8;">
+                <div><strong style="display:inline-block; width:160px; color:#fff;">Evidence Matcher:</strong> Matches resumes to JDs using semantic and token evidence.</div>
+                <div><strong style="display:inline-block; width:160px; color:#fff;">Transformer:</strong> Rewrites and tailors resumes to specific job descriptions.</div>
+                <div><strong style="display:inline-block; width:160px; color:#fff;">Bias Audit:</strong> Runs counterfactual perturbations and SHAP variance checks.</div>
+                <div><strong style="display:inline-block; width:160px; color:#fff;">Taxonomy Explorer:</strong> Map roles to ISCO-08 and O*NET standards.</div>
+                <div><strong style="display:inline-block; width:160px; color:#fff;">Compliance Toolkit:</strong> Pre-built reports and audit trails for regulatory review.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Modal (was Job Taxonomy) -->
+          <div class="fairmatch-modal-overlay" id="taxonomy-modal">
+            <div class="fairmatch-modal-card">
+              <button class="modal-close-btn" onclick="closeModal('taxonomy-modal')">&times;</button>
+              <h2 style="font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">Contact (Placeholder)</h2>
+              <p style="color: #9a9a9a; font-size: 14.5px; margin-bottom: 20px;">This is placeholder contact information to be updated.</p>
+
+              <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13.5px; color: #d8d8d8;">
+                <div><strong style="color:#fff;">Email:</strong> hello@vesper.ai (placeholder)</div>
+                <div><strong style="color:#fff;">Phone:</strong> +1 (555) 555-0123 (placeholder)</div>
+                <div><strong style="color:#fff;">Location:</strong> New York, NY (placeholder)</div>
+              </div>
+            </div>
+          </div>
 
         <div>
           <label style="font-size: 13px; color: #d8d8d8; font-weight: 500;">Job Description Requirements</label>
@@ -1094,38 +1131,7 @@
     </div>
   </div>
 
-  <!-- 2. Job Taxonomy Modal -->
-  <div class="fairmatch-modal-overlay" id="taxonomy-modal">
-    <div class="fairmatch-modal-card">
-      <button class="modal-close-btn" onclick="closeModal('taxonomy-modal')">&times;</button>
-      <h2 style="font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">Global Job Taxonomy Explorer</h2>
-      <p style="color: #9a9a9a; font-size: 14.5px; margin-bottom: 20px;">Search normalized O*NET and FairMatch job taxonomy standards for automated evidence matching.</p>
-      
-      <input type="text" placeholder="Search roles (e.g. Data Scientist, DevOps, Product Manager)..." style="width: 100%; padding: 12px 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.18); border-radius: 8px; color: #fff; font-size: 14px; outline: none; margin-bottom: 20px;">
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.12); padding: 16px; border-radius: 8px;">
-          <div style="font-weight: 600; font-size: 15px; color: #fff;">Full-Stack Software Engineer</div>
-          <div style="font-size: 12.5px; color: #9a9a9a; margin-top: 4px;">Taxonomy Code: 15-1252.00</div>
-          <div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px;">
-            <span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 4px; font-size: 11.5px;">React</span>
-            <span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 4px; font-size: 11.5px;">Node.js</span>
-            <span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 4px; font-size: 11.5px;">PostgreSQL</span>
-          </div>
-        </div>
-
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.12); padding: 16px; border-radius: 8px;">
-          <div style="font-weight: 600; font-size: 15px; color: #fff;">AI / ML Operations Engineer</div>
-          <div style="font-size: 12.5px; color: #9a9a9a; margin-top: 4px;">Taxonomy Code: 15-1221.00</div>
-          <div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px;">
-            <span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 4px; font-size: 11.5px;">PyTorch</span>
-            <span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 4px; font-size: 11.5px;">Docker</span>
-            <span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 4px; font-size: 11.5px;">MLflow</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Removed duplicate Job Taxonomy modal — replaced by Contact modal earlier -->
 
   <!-- 3. Bias Audit Harness Modal -->
   <div class="fairmatch-modal-overlay" id="audit-modal">
@@ -1155,17 +1161,15 @@
   <div class="fairmatch-modal-overlay" id="arch-modal">
     <div class="fairmatch-modal-card">
       <button class="modal-close-btn" onclick="closeModal('arch-modal')">&times;</button>
-      <h2 style="font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">FairMatch Architecture & Enterprise Compliance</h2>
+      <h2 style="font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px;">Platform Details</h2>
       <p style="color: #9a9a9a; font-size: 14.5px; margin-bottom: 20px;">Built for high-precision hiring teams adhering to NYC Local Law 144 and EU AI Act compliance standards.</p>
 
       <div style="font-size: 13.5px; color: #d8d8d8; line-height: 1.6; display: flex; flex-direction: column; gap: 14px;">
         <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.12); padding: 16px; border-radius: 8px;">
-          <h4 style="color: #fff; font-size: 15px; margin-bottom: 6px;">No Arbitrary Candidate Rankings</h4>
-          <p style="color: #9a9a9a; font-size: 13px;">FairMatch never produces black-box percentile rankings. Matches are evaluated purely on job-specific evidence coverage and SHAP explainability matrices.</p>
-        </div>
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.12); padding: 16px; border-radius: 8px;">
-          <h4 style="color: #fff; font-size: 15px; margin-bottom: 6px;">Zero Protected Attribute Data Ingestion</h4>
-          <p style="color: #9a9a9a; font-size: 13px;">FairMatch never collects, infers, or stores demographic or protected candidate traits. Audits use synthetic perturbations to stress-test feature model weights.</p>
+          <h4 style="color: #fff; font-size: 15px; margin-bottom: 6px;">Platform Architecture</h4>
+          <p style="color: #9a9a9a; font-size: 13px; margin-bottom:8px;">Our ML pipeline ingests normalized job descriptions and candidate evidence, producing explainable feature attributions via SHAP. The bias-audit layer runs counterfactual perturbations and variance checks before a match is surfaced.</p>
+          <p style="color: #9a9a9a; font-size: 13px; margin-bottom:8px;">Compliance hooks capture audit trails and generate reports compatible with NYC LL144 and EU AI Act requirements.</p>
+          <div style="display:block; font-size:13px; color:#d8d8d8;"><strong style="color:#fff; display:inline-block; width:160px;">Pipeline:</strong> Ingest → Normalize → Embed → Match → Explain → Audit</div>
         </div>
       </div>
     </div>
@@ -1251,6 +1255,77 @@
           closeMenu();
         }
       });
+    })();
+
+    // Spiral particle canvas implementation (lightweight, respects prefers-reduced-motion)
+    (function () {
+      var canvas = document.getElementById('spiral-canvas');
+      if (!canvas) return;
+      var dpr = window.devicePixelRatio || 1;
+      function setup() {
+        canvas.width = Math.floor(canvas.clientWidth * dpr);
+        canvas.height = Math.floor(canvas.clientHeight * dpr);
+        canvas.style.width = canvas.clientWidth + 'px';
+        canvas.style.height = canvas.clientHeight + 'px';
+        ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+      }
+      var ctx;
+      var particles = [];
+      var opts = { count: 120, turns: 3, radius: Math.min(window.innerWidth, window.innerHeight) * 0.45, baseSize: 1.6 };
+
+      function buildParticles() {
+        particles = [];
+        var cx = canvas.clientWidth / 2;
+        var cy = canvas.clientHeight / 2;
+        for (var i = 0; i < opts.count; i++) {
+          var t = i / opts.count;
+          var angle = t * Math.PI * 2 * opts.turns;
+          var r = t * opts.radius;
+          var x = cx + Math.cos(angle) * r;
+          var y = cy + Math.sin(angle) * r;
+          particles.push({ x: x, y: y, a: (Math.random() * 0.7) + 0.12, s: opts.baseSize * (0.6 + Math.random() * 1.4), ang: angle });
+        }
+      }
+
+      var angleOff = 0;
+      var rafId = null;
+
+      function draw() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+        ctx.globalCompositeOperation = 'lighter';
+        for (var i = 0; i < particles.length; i++) {
+          var p = particles[i];
+          var x = p.x + Math.cos(p.ang + angleOff) * 6;
+          var y = p.y + Math.sin(p.ang + angleOff) * 6;
+          var g = ctx.createRadialGradient(x, y, 0, x, y, p.s * 3);
+          var alpha = p.a * 0.9;
+          g.addColorStop(0, 'rgba(255,255,255,' + (0.9 * alpha) + ')');
+          g.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(x, y, p.s * 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        angleOff += 0.0009; // slow rotation
+        rafId = requestAnimationFrame(draw);
+      }
+
+      function start() {
+        setup();
+        buildParticles();
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; // respect reduced motion
+        if (rafId) cancelAnimationFrame(rafId);
+        draw();
+      }
+
+      window.addEventListener('resize', function () {
+        setup();
+        buildParticles();
+      });
+
+      start();
     })();
 
     // Modal Control Handlers
