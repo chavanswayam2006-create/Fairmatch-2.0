@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AlertCircle, ArrowLeft, ChevronRight, FileSearch, Globe2, Search, Sparkles } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_URL || '';
+const API_BASE = (import.meta as any).env?.VITE_API_URL || '';
 
 type Group = { code: string; title: string; level: number; parent_code?: string; definition: string; source_page?: number };
 type Detail = Group & {

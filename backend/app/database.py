@@ -4,7 +4,12 @@ from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, Float, Text, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./fairmatch.db")
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
+        DATABASE_URL = "sqlite:////tmp/fairmatch.db"
+    else:
+        DATABASE_URL = "sqlite:///./fairmatch.db"
 
 # For SQLite, check same thread settings
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}

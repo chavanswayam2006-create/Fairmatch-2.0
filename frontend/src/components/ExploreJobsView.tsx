@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Briefcase, MapPin, GraduationCap, ChevronRight, ArrowLeft, Globe, Filter, X, Layers, Clock, CheckCircle2, Star, Sparkles, AlertCircle, ChevronDown } from 'lucide-react';
 
-const API_BASE = (import.meta as any).env?.VITE_API_URL || 'http://localhost:8000';
+const API_BASE = (import.meta as any).env?.VITE_API_URL || '';
 
 interface JobItem {
   id: string;
