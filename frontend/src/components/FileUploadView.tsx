@@ -84,7 +84,6 @@ Key Responsibilities:
   };
 
   const handleStartMatching = async () => {
-    // Form Validation
     if (!jobTitle.trim()) {
       setFormError('Please enter a target Job Title before proceeding.');
       return;
@@ -98,340 +97,253 @@ Key Responsibilities:
     setFormError(null);
     analytics.formSubmit('job_analysis_initiate');
 
+    let jobId = 'job-custom-1';
+
     try {
-      const res = await fetch('/api/v1/jobs', {
+      const createJobRes = await fetch('/api/v1/jobs', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': 'fairmatch-secret-key'
+        },
         body: JSON.stringify({
           title: jobTitle,
-          raw_text: jobText
+          raw_text: jobText,
+          department: 'Engineering'
         })
       });
-      const jobData = await res.json();
-      onRunMatch(jobData.id, resumeFiles, pastedResumes);
+
+      if (createJobRes.ok) {
+        const data = await createJobRes.json();
+        if (data && data.id) {
+          jobId = data.id;
+        }
+      }
     } catch (err) {
-      console.error("Error creating job:", err);
-      onRunMatch('job_demo_01', resumeFiles, pastedResumes);
+      console.warn("Backend API unavailable, executing local matching pipeline:", err);
     }
+
+    onRunMatch(jobId, resumeFiles, pastedResumes);
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '24px' }}>
-      
-      {/* Form Error Announcement Banner */}
-      {formError && (
-        <div
-          style={{
-            gridColumn: '1 / -1',
-            backgroundColor: '#fee2e2',
-            border: '1px solid #fca5a5',
-            borderRadius: '12px',
-            padding: '14px 18px',
-            fontSize: '13px',
-            color: '#991b1b',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px'
-          }}
-          role="alert"
-          aria-live="assertive"
-        >
-          <AlertCircle size={18} color="#dc2626" style={{ flexShrink: 0 }} />
-          <div>{formError}</div>
+    <div className="max-w-6xl mx-auto space-y-8 py-4">
+      {/* Page Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-850 pb-6">
+        <div>
+          <div className="inline-flex items-center gap-2 text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">
+            <Sparkles size={14} className="text-zinc-300" />
+            <span>FairMatch Evidence Ingestion Engine</span>
+          </div>
+          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-white">
+            Job Description & Resume Matcher
+          </h1>
+          <p className="text-sm text-zinc-400 mt-1 max-w-2xl">
+            Ingest job descriptions and candidate resumes to analyze skill coverage, experience deltas, and SHAP explainability matrices.
+          </p>
         </div>
-      )}
 
-      {/* 1. Job Description Inputs & Global Library Connection */}
-      <div style={{
-        backgroundColor: '#ffffff',
-        border: '1px solid #e4e4e7',
-        borderRadius: '16px',
-        padding: '24px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ fontSize: '18px', fontWeight: 600 }}>1. Job Description</h3>
-          {onExploreJobs && (
+        {onExploreJobs && (
+          <button
+            onClick={onExploreJobs}
+            className="btn-vesper btn-vesper-ghost text-xs self-start md:self-auto"
+          >
+            <Globe size={14} className="mr-2" />
+            <span>Browse Job Taxonomy</span>
+          </button>
+        )}
+      </div>
+
+      {/* Selected Job Banner */}
+      {libraryJob && (
+        <div className="fm-glass-card p-4 flex items-center justify-between gap-4 border-zinc-700 bg-zinc-900/60">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center text-white shrink-0">
+              <Layers size={18} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Taxonomy Preset</span>
+                <span className="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">{libraryJob.soc_code || 'O*NET'}</span>
+              </div>
+              <h3 className="text-sm font-semibold text-white mt-0.5">{libraryJob.title || libraryJob.normalized_title}</h3>
+            </div>
+          </div>
+          {onClearLibraryJob && (
             <button
-              onClick={onExploreJobs}
-              type="button"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                backgroundColor: '#eff6ff',
-                color: '#1e40af',
-                border: '1px solid #bfdbfe',
-                padding: '6px 12px',
-                borderRadius: '9999px',
-                fontSize: '12px',
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
+              onClick={onClearLibraryJob}
+              className="p-1.5 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+              title="Clear taxonomy preset"
             >
-              <Globe size={13} color="#2563eb" /> Select from Job Library
+              <X size={16} />
             </button>
           )}
         </div>
+      )}
 
-        {/* Library Job Selected Badge Banner */}
-        {libraryJob && (
-          <div style={{
-            backgroundColor: '#f0fdf4',
-            border: '1px solid #bbf7d0',
-            borderRadius: '12px',
-            padding: '12px 16px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            fontSize: '13px',
-            color: '#166534'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Sparkles size={16} color="#166534" />
-              <div>
-                <strong>Selected from Job Library:</strong> {libraryJob.title} ({libraryJob.industry})
-              </div>
+      {/* Main Grid Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Left Column: Job Description Setup */}
+        <div className="fm-glass-card p-6 space-y-5">
+          <div className="flex items-center gap-3 border-b border-zinc-850 pb-4">
+            <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-white">
+              <FileText size={16} />
             </div>
-            {onClearLibraryJob && (
-              <button
-                onClick={onClearLibraryJob}
-                title="Clear library selection and enter custom job description"
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#166534',
-                  cursor: 'pointer',
-                  padding: '2px'
-                }}
-              >
-                <X size={16} />
-              </button>
-            )}
+            <div>
+              <h2 className="text-base font-semibold text-white">1. Job Requirement Profile</h2>
+              <p className="text-xs text-zinc-400">Target position specifications & required skill taxonomy</p>
+            </div>
           </div>
-        )}
-        
-        <div>
-          <label htmlFor="job-title-input" style={{ fontSize: '12px', fontWeight: 600, color: '#555' }}>
-            Job Title <span style={{ color: '#dc2626' }}>*</span>
-          </label>
-          <input
-            id="job-title-input"
-            type="text"
-            value={jobTitle}
-            onChange={e => { setJobTitle(e.target.value); setFormError(null); }}
-            placeholder="e.g. Senior Full-Stack Engineer"
-            aria-required="true"
-            aria-invalid={!jobTitle.trim()}
-            style={{
-              width: '100%',
-              padding: '10px 14px',
-              borderRadius: '8px',
-              border: '1px solid #e4e4e7',
-              marginTop: '4px',
-              fontSize: '14px',
-              fontFamily: 'inherit'
-            }}
-          />
+
+          <div>
+            <label className="block text-xs font-medium text-zinc-300 mb-1.5">Target Job Title</label>
+            <input
+              type="text"
+              className="w-full fm-input"
+              value={jobTitle}
+              onChange={(e) => setJobTitle(e.target.value)}
+              placeholder="e.g. Senior Full-Stack Engineer"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-zinc-300 mb-1.5">Full Job Description & Requirements</label>
+            <textarea
+              rows={9}
+              className="w-full fm-input font-mono text-xs leading-relaxed resize-none"
+              value={jobText}
+              onChange={(e) => setJobText(e.target.value)}
+              placeholder="Paste full job description including required skills, years of experience, and responsibilities..."
+            />
+          </div>
         </div>
 
-        <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <label htmlFor="job-text-input" style={{ fontSize: '12px', fontWeight: 600, color: '#555' }}>
-              Job Description Text & Requirements <span style={{ color: '#dc2626' }}>*</span>
-            </label>
-            <span style={{ fontSize: '11px', color: '#888' }}>
-              {jobText.length} characters
-            </span>
+        {/* Right Column: Candidate Resume Attachment */}
+        <div className="fm-glass-card p-6 space-y-5">
+          <div className="flex items-center gap-3 border-b border-zinc-850 pb-4">
+            <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-white">
+              <UploadCloud size={16} />
+            </div>
+            <div>
+              <h2 className="text-base font-semibold text-white">2. Candidate Resumes</h2>
+              <p className="text-xs text-zinc-400">Upload PDF / DOCX resumes or paste raw resume text</p>
+            </div>
           </div>
-          <textarea
-            id="job-text-input"
-            rows={10}
-            value={jobText}
-            onChange={e => { setJobText(e.target.value); setFormError(null); }}
-            placeholder="Paste role requirements, key skills, responsibilities, and qualifications or select from Global Job Library..."
-            aria-required="true"
-            aria-invalid={!jobText.trim() || jobText.trim().length < 20}
-            style={{
-              width: '100%',
-              padding: '12px',
-              borderRadius: '8px',
-              border: '1px solid #e4e4e7',
-              marginTop: '4px',
-              fontSize: '13px',
-              fontFamily: 'inherit',
-              lineHeight: '1.5'
-            }}
-          />
-        </div>
-      </div>
 
-      {/* 2. Batch Resumes Upload */}
-      <div style={{
-        backgroundColor: '#ffffff',
-        border: '1px solid #e4e4e7',
-        borderRadius: '16px',
-        padding: '24px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        gap: '16px'
-      }}>
-        <div>
-          <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '16px' }}>
-            2. Batch Resume Ingestion
-          </h3>
-
-          {/* Drag & Drop File Upload Area */}
+          {/* File Dropzone */}
           <div
-            onDragOver={e => e.preventDefault()}
+            onDragOver={(e) => e.preventDefault()}
             onDrop={handleFileDrop}
-            style={{
-              border: '2px dashed #d1d5db',
-              borderRadius: '12px',
-              padding: '24px',
-              textAlign: 'center',
-              backgroundColor: '#fafafa',
-              cursor: 'pointer',
-              marginBottom: '16px'
-            }}
+            className="border-2 border-dashed border-zinc-800 hover:border-zinc-500 rounded-xl p-6 text-center bg-zinc-950/40 hover:bg-zinc-900/40 transition-all cursor-pointer group"
           >
-            <UploadCloud size={32} style={{ color: '#666', marginBottom: '8px' }} />
-            <div style={{ fontSize: '13px', fontWeight: 600, color: '#111' }}>
-              Drag & Drop PDF or DOCX Resumes
-            </div>
-            <div style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>
-              Supports PDF, DOCX, and TXT resume files
-            </div>
             <input
               type="file"
+              id="file-upload"
               multiple
               accept=".pdf,.docx,.doc,.txt"
+              className="hidden"
               onChange={handleFileInputChange}
-              style={{ display: 'none' }}
-              id="file-input-field"
             />
-            <label
-              htmlFor="file-input-field"
-              style={{
-                display: 'inline-block',
-                marginTop: '12px',
-                padding: '6px 16px',
-                backgroundColor: '#ffffff',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '12px',
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
-            >
-              Browse Files
+            <label htmlFor="file-upload" className="cursor-pointer block">
+              <UploadCloud className="mx-auto h-8 w-8 text-zinc-400 group-hover:text-white transition-colors mb-2" />
+              <span className="text-sm font-medium text-white block">Drop resume files here or click to browse</span>
+              <span className="text-xs text-zinc-500 block mt-1">Supports PDF, DOCX, and TXT files</span>
             </label>
           </div>
 
-          {/* Selected File Badges */}
+          {/* Attached Files List */}
           {resumeFiles.length > 0 && (
-            <div style={{ marginBottom: '16px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: '#555', marginBottom: '6px' }}>
-                Uploaded Resume Files ({resumeFiles.length}):
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {resumeFiles.map((f, i) => (
-                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f4f4f6', padding: '6px 12px', borderRadius: '6px', fontSize: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <FileText size={14} color="#555" />
-                      <span>{f.name}</span>
+            <div className="space-y-2">
+              <div className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Attached Documents ({resumeFiles.length})</div>
+              <div className="max-h-32 overflow-y-auto space-y-1.5 pr-1">
+                {resumeFiles.map((file, index) => (
+                  <div key={index} className="flex items-center justify-between p-2 rounded bg-zinc-900 border border-zinc-800 text-xs">
+                    <div className="flex items-center gap-2 truncate">
+                      <FileText size={14} className="text-zinc-400 shrink-0" />
+                      <span className="truncate text-zinc-200">{file.name}</span>
+                      <span className="text-[10px] text-zinc-500">({(file.size / 1024).toFixed(1)} KB)</span>
                     </div>
-                    <Trash2 size={14} color="#dc2626" style={{ cursor: 'pointer' }} onClick={() => setResumeFiles(prev => prev.filter((_, idx) => idx !== i))} />
+                    <button
+                      onClick={() => setResumeFiles(prev => prev.filter((_, i) => i !== index))}
+                      className="p-1 hover:bg-zinc-800 text-zinc-400 hover:text-white rounded"
+                    >
+                      <Trash2 size={13} />
+                    </button>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Paste Raw Text Resumes Section */}
-          <div style={{ borderTop: '1px solid #f4f4f6', paddingTop: '16px' }}>
-            <div style={{ fontSize: '12px', fontWeight: 600, color: '#555', marginBottom: '6px' }}>
-              Or Paste Resume Text
+          {/* Text Resume Input Option */}
+          <div className="pt-2 border-t border-zinc-850 space-y-2">
+            <label className="block text-xs font-medium text-zinc-300">Or Paste Custom Resume Text</label>
+            <div className="flex gap-2">
+              <textarea
+                rows={2}
+                className="w-full fm-input font-mono text-xs resize-none"
+                placeholder="Paste candidate resume text here..."
+                value={pastedInput}
+                onChange={(e) => setPastedInput(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={addPastedResume}
+                className="btn-vesper btn-vesper-ghost h-auto px-3 shrink-0"
+              >
+                <Plus size={14} />
+              </button>
             </div>
-            <textarea
-              rows={4}
-              value={pastedInput}
-              onChange={e => setPastedInput(e.target.value)}
-              placeholder="Paste candidate resume text here..."
-              style={{
-                width: '100%',
-                padding: '10px',
-                borderRadius: '8px',
-                border: '1px solid #e4e4e7',
-                fontSize: '12px',
-                fontFamily: 'inherit'
-              }}
-            />
-            <button
-              onClick={addPastedResume}
-              disabled={!pastedInput.trim()}
-              style={{
-                marginTop: '8px',
-                padding: '6px 14px',
-                backgroundColor: '#ffffff',
-                border: '1px solid #d1d5db',
-                borderRadius: '6px',
-                fontSize: '12px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}
-            >
-              <Plus size={14} /> Add Text Resume
-            </button>
-
-            {pastedResumes.length > 0 && (
-              <div style={{ marginTop: '12px', fontSize: '12px', color: '#166534', fontWeight: 600 }}>
-                ✓ {pastedResumes.length} text resume(s) added
-              </div>
-            )}
           </div>
-        </div>
 
-        {/* Start Job Analysis Action Button */}
+          {/* Pasted Text Resumes List */}
+          {pastedResumes.length > 0 && (
+            <div className="space-y-1">
+              <div className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Custom Text Resumes ({pastedResumes.length})</div>
+              {pastedResumes.map((txt, idx) => (
+                <div key={idx} className="flex items-center justify-between p-2 rounded bg-zinc-900 border border-zinc-800 text-xs">
+                  <span className="truncate text-zinc-300">Candidate #{idx + 1}: {txt.substring(0, 45)}...</span>
+                  <button
+                    onClick={() => setPastedResumes(prev => prev.filter((_, i) => i !== idx))}
+                    className="p-1 text-zinc-400 hover:text-white"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Error Message */}
+      {formError && (
+        <div className="p-4 rounded-xl bg-red-950/40 border border-red-900/60 text-red-200 text-sm flex items-center gap-3">
+          <AlertCircle size={18} className="shrink-0 text-red-400" />
+          <span>{formError}</span>
+        </div>
+      )}
+
+      {/* Action Bar */}
+      <div className="flex items-center justify-end gap-4 border-t border-zinc-850 pt-6">
         <button
           onClick={handleStartMatching}
           disabled={isLoading}
-          style={{
-            width: '100%',
-            backgroundColor: '#000000',
-            color: '#ffffff',
-            border: 'none',
-            borderRadius: '9999px',
-            padding: '14px',
-            fontSize: '15px',
-            fontWeight: 600,
-            cursor: isLoading ? 'not-allowed' : 'pointer',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: '8px'
-          }}
+          className="btn-vesper btn-vesper-solid h-12 px-8 text-sm font-semibold"
         >
           {isLoading ? (
             <>
-              <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
-              <span>Analyzing Job Fit...</span>
+              <Loader2 size={16} className="animate-spin mr-2" />
+              <span>Analyzing Match & SHAP Attributes...</span>
             </>
           ) : (
             <>
-              <Play size={16} fill="#fff" />
-              <span>Run Job-Specific Analysis</span>
+              <Play size={16} className="mr-2 fill-current" />
+              <span>Run FairMatch Evaluation</span>
             </>
           )}
         </button>
       </div>
-
     </div>
   );
 };

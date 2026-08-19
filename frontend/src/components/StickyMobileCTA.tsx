@@ -12,61 +12,40 @@ export const StickyMobileCTA: React.FC<StickyMobileCTAProps> = ({ onOpenDashboar
   if (dismissed) return null;
 
   return (
-    <div
-      className="mobile-sticky-cta-bar"
-      style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: 'rgba(255, 255, 255, 0.96)',
-        backdropFilter: 'blur(12px)',
-        borderTop: '1px solid #e4e4e7',
-        padding: '12px 16px',
-        paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
-        zIndex: 45,
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.05)',
-        fontFamily: "'Inter', sans-serif"
-      }}
-      role="region"
-      aria-label="Quick action navigation bar"
-    >
-      <button
-        onClick={() => {
-          analytics.ctaClick('sticky_mobile_start_analysis');
-          onOpenDashboard();
-        }}
-        className="btn-black"
+    <>
+      <div
+        className="mobile-sticky-cta-bar fixed bottom-0 left-0 right-0 z-[45] flex items-center gap-3 px-4"
         style={{
-          flex: 1,
-          justifyContent: 'center',
-          padding: '12px 20px',
-          fontSize: '13px',
-          fontWeight: 600,
-          borderRadius: '9999px'
+          paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
+          paddingTop: '12px',
+          background: 'rgba(8, 8, 8, 0.9)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          borderTop: '1px solid rgba(255,255,255,0.12)',
+          boxShadow: '0 -4px 24px rgba(0,0,0,0.5)',
         }}
+        role="region"
+        aria-label="Quick action navigation bar"
       >
-        <Play size={14} fill="white" />
-        <span>Start Job Analysis →</span>
-      </button>
+        <button
+          onClick={() => {
+            analytics.ctaClick('sticky_mobile_start_analysis');
+            onOpenDashboard();
+          }}
+          className="btn-vesper btn-vesper-solid flex-1 h-12 text-sm font-semibold"
+        >
+          <Play size={14} className="fill-current mr-2" />
+          <span>Launch FairMatch Analysis →</span>
+        </button>
 
-      <button
-        onClick={() => setDismissed(true)}
-        style={{
-          background: 'none',
-          border: 'none',
-          color: '#888',
-          padding: '8px',
-          cursor: 'pointer',
-          borderRadius: '50%'
-        }}
-        aria-label="Dismiss sticky CTA"
-      >
-        <X size={16} />
-      </button>
+        <button
+          onClick={() => setDismissed(true)}
+          className="p-2.5 rounded-lg border border-zinc-800 bg-zinc-900/60 text-zinc-400 hover:text-white hover:border-zinc-600 transition-colors shrink-0"
+          aria-label="Dismiss sticky CTA"
+        >
+          <X size={16} />
+        </button>
+      </div>
 
       <style>{`
         @media (min-width: 769px) {
@@ -75,6 +54,6 @@ export const StickyMobileCTA: React.FC<StickyMobileCTAProps> = ({ onOpenDashboar
           }
         }
       `}</style>
-    </div>
+    </>
   );
 };

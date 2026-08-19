@@ -12,7 +12,6 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({ onOpen
   useEffect(() => {
     const consent = localStorage.getItem('fairmatch_cookie_consent');
     if (!consent) {
-      // Delay showing banner slightly for clean page load
       const timer = setTimeout(() => setIsVisible(true), 1200);
       return () => clearTimeout(timer);
     }
@@ -33,62 +32,51 @@ export const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({ onOpen
   if (!isVisible) return null;
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: '24px',
-      left: '24px',
-      right: '24px',
-      maxWidth: '460px',
-      backgroundColor: '#ffffff',
-      border: '1px solid #e4e4e7',
-      borderRadius: '16px',
-      padding: '20px',
-      boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-      zIndex: 90,
-      fontFamily: "'Inter', sans-serif"
-    }}
+    <div
+      className="fixed bottom-6 left-6 right-6 max-w-sm z-[90] font-sans"
       role="region"
       aria-label="Cookie consent banner"
+      style={{ maxWidth: '440px' }}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600, fontSize: '14px', color: '#09090b' }}>
-          <ShieldCheck size={18} color="#16a34a" />
-          <span>Privacy & Preference Notice</span>
+      <div className="fm-glass-card p-5 shadow-2xl shadow-black/60">
+        <div className="flex justify-between items-start mb-3">
+          <div className="flex items-center gap-2 font-semibold text-sm text-white">
+            <ShieldCheck size={16} className="text-emerald-400" />
+            <span>Privacy & Preference Notice</span>
+          </div>
+          <button
+            onClick={handleDecline}
+            className="p-1 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+            aria-label="Close banner"
+          >
+            <X size={15} />
+          </button>
         </div>
-        <button
-          onClick={handleDecline}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888', padding: '2px' }}
-          aria-label="Close banner"
-        >
-          <X size={16} />
-        </button>
-      </div>
 
-      <p style={{ fontSize: '12px', color: '#475569', lineHeight: 1.5, marginBottom: '14px' }}>
-        We use essential local storage to save your application preferences. We do not track you across third-party websites or sell your data.{' '}
-        <button
-          onClick={onOpenPrivacy}
-          style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '12px', textDecoration: 'underline', padding: 0 }}
-        >
-          Read Privacy Policy
-        </button>
-      </p>
+        <p className="text-xs text-zinc-400 leading-relaxed mb-4">
+          We use essential local storage to save your application preferences. We do not track you across third-party websites or sell your data.{' '}
+          <button
+            onClick={onOpenPrivacy}
+            className="text-zinc-200 underline underline-offset-2 hover:text-white transition-colors"
+          >
+            Read Privacy Policy
+          </button>
+        </p>
 
-      <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-        <button
-          onClick={handleDecline}
-          className="btn-outline"
-          style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '9999px' }}
-        >
-          Essential Only
-        </button>
-        <button
-          onClick={handleAccept}
-          className="btn-black"
-          style={{ padding: '6px 16px', fontSize: '12px', borderRadius: '9999px' }}
-        >
-          Accept Preferences
-        </button>
+        <div className="flex gap-2 justify-end">
+          <button
+            onClick={handleDecline}
+            className="btn-vesper btn-vesper-ghost h-8 px-3 text-xs"
+          >
+            Essential Only
+          </button>
+          <button
+            onClick={handleAccept}
+            className="btn-vesper btn-vesper-solid h-8 px-4 text-xs font-semibold"
+          >
+            Accept Preferences
+          </button>
+        </div>
       </div>
     </div>
   );

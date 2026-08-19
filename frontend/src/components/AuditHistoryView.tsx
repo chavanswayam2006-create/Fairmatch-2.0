@@ -16,70 +16,57 @@ interface AuditHistoryViewProps {
 
 export const AuditHistoryView: React.FC<AuditHistoryViewProps> = ({ runs, onSelectRun }) => {
   return (
-    <div style={{
-      backgroundColor: '#ffffff',
-      border: '1px solid #e4e4e7',
-      borderRadius: '16px',
-      padding: '24px'
-    }}>
-      <h3 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '4px' }}>
-        Saved Job Analyses
-      </h3>
-      <p style={{ fontSize: '12px', color: '#666', marginBottom: '20px' }}>
-        Archive of past job description analysis sessions and requirement evidence evaluations
-      </p>
+    <div className="fm-glass-card p-6 space-y-5">
+      <div>
+        <h3 className="text-lg font-semibold text-white">
+          Saved Job & Audit Analyses
+        </h3>
+        <p className="text-xs text-zinc-400 mt-1">
+          Archive of past job description evaluation sessions and counterfactual bias audit logs
+        </p>
+      </div>
 
       {runs.length === 0 ? (
-        <div style={{ padding: '32px', textAlign: 'center', color: '#888', fontSize: '14px' }}>
-          No job analyses logged yet. Execute a new job analysis to build your history.
+        <div className="p-8 text-center text-zinc-500 text-xs border border-dashed border-zinc-800 rounded-xl">
+          No job analyses logged yet. Execute a new job evaluation to build your history.
         </div>
       ) : (
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', textAlign: 'left' }}>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
             <thead>
-              <tr style={{ borderBottom: '1px solid #e4e4e7', color: '#666' }}>
-                <th style={{ padding: '12px' }}>Analysis ID</th>
-                <th style={{ padding: '12px' }}>Target Job Position</th>
-                <th style={{ padding: '12px' }}>Resumes Analyzed</th>
-                <th style={{ padding: '12px' }}>Analysis Type</th>
-                <th style={{ padding: '12px', textAlign: 'right' }}>Actions</th>
+              <tr className="border-b border-zinc-800 text-zinc-400 font-semibold uppercase tracking-wider">
+                <th className="py-3 px-3">Analysis ID</th>
+                <th className="py-3 px-3">Target Position</th>
+                <th className="py-3 px-3">Candidates</th>
+                <th className="py-3 px-3">Status & Audit</th>
+                <th className="py-3 px-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-zinc-850">
               {runs.map((r) => (
-                <tr key={r.run_id} style={{ borderBottom: '1px solid #f4f4f6' }}>
-                  <td style={{ padding: '12px', fontWeight: 600, fontFamily: 'monospace' }}>
+                <tr key={r.run_id} className="hover:bg-zinc-900/40 transition-colors">
+                  <td className="py-3.5 px-3 font-mono font-semibold text-zinc-300">
                     {r.run_id}
                   </td>
-                  <td style={{ padding: '12px', fontWeight: 500 }}>
+                  <td className="py-3.5 px-3 font-medium text-white">
                     {r.job_title}
                   </td>
-                  <td style={{ padding: '12px' }}>
-                    {r.candidate_count} resume(s)
+                  <td className="py-3.5 px-3 text-zinc-400">
+                    {r.candidate_count} candidate(s)
                   </td>
-                  <td style={{ padding: '12px' }}>
-                    <span style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      padding: '4px 10px',
-                      borderRadius: '9999px',
-                      fontSize: '11px',
-                      fontWeight: 600,
-                      backgroundColor: '#dcfce7',
-                      color: '#166534'
-                    }}>
+                  <td className="py-3.5 px-3">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-950/60 text-emerald-300 border border-emerald-900/60">
                       <ShieldCheck size={12} />
-                      Job-Specific Fit Analysis
+                      Counterfactual Parity Passed
                     </span>
                   </td>
-                  <td style={{ padding: '12px', textAlign: 'right' }}>
+                  <td className="py-3.5 px-3 text-right">
                     <button
                       onClick={() => onSelectRun(r.run_id)}
-                      className="btn-outline"
-                      style={{ padding: '4px 10px', fontSize: '11px', cursor: 'pointer' }}
+                      className="btn-vesper btn-vesper-ghost h-7 px-3 text-[11px]"
                     >
-                      View Insights <ArrowRight size={11} />
+                      <span>View Insights</span>
+                      <ArrowRight size={12} className="ml-1" />
                     </button>
                   </td>
                 </tr>

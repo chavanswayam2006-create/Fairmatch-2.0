@@ -28,7 +28,6 @@ interface FairnessReportViewProps {
 }
 
 export const FairnessReportView: React.FC<FairnessReportViewProps> = ({ auditData, onRefreshAudit }) => {
-  // Format data for Recharts
   const nameData = Object.entries(auditData.name_group_scores).map(([group, score]) => ({
     group,
     score
@@ -64,111 +63,83 @@ export const FairnessReportView: React.FC<FairnessReportViewProps> = ({ auditDat
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-      {/* 1. Fairness Status Header & Download Actions */}
-      <div style={{
-        backgroundColor: auditData.flagged ? '#fff5f5' : '#f0fdf4',
-        border: `1px solid ${auditData.flagged ? '#fca5a5' : '#86efac'}`,
-        borderRadius: '16px',
-        padding: '24px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '16px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '50%',
-            backgroundColor: auditData.flagged ? '#ef4444' : '#10b981',
-            color: '#ffffff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            {auditData.flagged ? <AlertTriangle size={24} /> : <ShieldCheck size={24} />}
+    <div className="space-y-7 py-2">
+      {/* Fairness Status Banner */}
+      <div className={`fm-glass-card p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ${
+        auditData.flagged ? 'border-red-900/60 bg-red-950/20' : 'border-emerald-900/60 bg-emerald-950/20'
+      }`}>
+        <div className="flex items-center gap-4">
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white shrink-0 ${
+            auditData.flagged ? 'bg-red-900/40 border border-red-800' : 'bg-emerald-900/40 border border-emerald-800'
+          }`}>
+            {auditData.flagged ? <AlertTriangle size={24} className="text-red-400" /> : <ShieldCheck size={24} className="text-emerald-400" />}
           </div>
           <div>
-            <h2 style={{ fontSize: '20px', fontWeight: 600, color: auditData.flagged ? '#991b1b' : '#166534' }}>
+            <h2 className={`text-xl font-bold tracking-tight ${auditData.flagged ? 'text-red-300' : 'text-emerald-300'}`}>
               {auditData.flagged ? 'Robustness Threshold Exceeded' : 'Fairness & Robustness Audit Passed'}
             </h2>
-            <p style={{ fontSize: '13px', color: auditData.flagged ? '#7f1d1d' : '#14532d', marginTop: '2px' }}>
+            <p className="text-xs text-zinc-400 mt-0.5">
               {auditData.flagged
-                ? `Candidate variant score gap (${auditData.max_score_gap} pts) exceeds threshold (${auditData.threshold} pts). Compliance review required.`
+                ? `Candidate variant score gap (${auditData.max_score_gap} pts) exceeds allowable threshold (${auditData.threshold} pts). Compliance review required.`
                 : `Formatting and institution variant score gap (${auditData.max_score_gap} pts) is within allowable threshold (${auditData.threshold} pts).`}
             </p>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button onClick={onRefreshAudit} className="btn-outline">
-            <RefreshCw size={14} /> Re-run Test
+        <div className="flex items-center gap-3 self-stretch md:self-auto justify-end">
+          <button
+            onClick={onRefreshAudit}
+            className="btn-vesper btn-vesper-ghost text-xs h-9 px-3"
+          >
+            <RefreshCw size={14} className="mr-1.5" />
+            <span>Re-run Audit</span>
           </button>
-          <button onClick={exportCSV} className="btn-black">
-            <Download size={14} /> Export Audit Log (.CSV)
+          <button
+            onClick={exportCSV}
+            className="btn-vesper btn-vesper-solid text-xs h-9 px-4"
+          >
+            <Download size={14} className="mr-1.5" />
+            <span>Export Audit Log (CSV)</span>
           </button>
         </div>
       </div>
 
-      {/* 2. Key Fairness Metrics Cards */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-        gap: '16px'
-      }}>
-        <MetricCard
-          label="Formatting Parity Diff"
-          value={`${auditData.demographic_parity_diff} pts`}
-          subtext="Max score gap across name structure & unicode variants"
-          status={auditData.demographic_parity_diff > 5 ? 'bad' : 'good'}
-        />
-        <MetricCard
-          label="Selection Rate Ratio"
-          value={auditData.selection_rate_ratio.toFixed(2)}
-          subtext="Disparate Impact ratio (Min group / Max group)"
-          status={auditData.selection_rate_ratio < 0.8 ? 'bad' : 'good'}
-        />
-        <MetricCard
-          label="Max Score Gap"
-          value={`${auditData.max_score_gap} pts`}
-          subtext={`Configured threshold: ${auditData.threshold} pts`}
-          status={auditData.max_score_gap > auditData.threshold ? 'bad' : 'good'}
-        />
-        <MetricCard
-          label="Audited Counterfactuals"
-          value={auditData.detailed_variants.length.toString()}
-          subtext="Synthetic format, tier & career gap perturbations"
-          status="neutral"
-        />
+      {/* Audit Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="fm-glass-card p-5 space-y-1">
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Formatting Parity Diff</div>
+          <div className="text-3xl font-bold text-white">{auditData.demographic_parity_diff.toFixed(2)} pts</div>
+          <div className="text-[11px] text-zinc-500">Max score variance across name perturbations</div>
+        </div>
+
+        <div className="fm-glass-card p-5 space-y-1">
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Selection Rate Ratio (SRR)</div>
+          <div className="text-3xl font-bold text-white">{auditData.selection_rate_ratio.toFixed(2)}</div>
+          <div className="text-[11px] text-zinc-500">Selection parity ratio (&ge; 0.80 benchmark)</div>
+        </div>
+
+        <div className="fm-glass-card p-5 space-y-1">
+          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Max Score Gap</div>
+          <div className="text-3xl font-bold text-white">{auditData.max_score_gap.toFixed(1)} pts</div>
+          <div className="text-[11px] text-zinc-500">Threshold limit: {auditData.threshold}.0 pts</div>
+        </div>
       </div>
 
-      {/* 3. Recharts Visualizations */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '24px' }}>
-        {/* Name Formatting Structure Group Scores Chart */}
-        <div style={{
-          backgroundColor: '#ffffff',
-          border: '1px solid #e4e4e7',
-          borderRadius: '16px',
-          padding: '24px'
-        }}>
-          <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>
-            Name & Formatting Structure Group Scores
-          </h3>
-          <p style={{ fontSize: '12px', color: '#666', marginBottom: '20px' }}>
-            Average match score when swapping candidate name formats & diacritics
-          </p>
-          <div style={{ width: '100%', height: 260 }}>
-            <ResponsiveContainer>
+      {/* Counterfactual Perturbation Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="fm-glass-card p-6 space-y-4">
+          <h3 className="text-sm font-semibold text-white">1. Name Format & Diacritics Perturbation</h3>
+          <p className="text-xs text-zinc-400">Evaluates score consistency across hyphenated names, diacritics, and initial mononyms.</p>
+          <div className="h-60 w-full pt-2">
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart data={nameData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="group" tick={{ fontSize: 11 }} angle={-10} textAnchor="end" />
-                <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(value: any) => [`${value} pts`, 'Avg Score']} />
-                <Bar dataKey="score" radius={[6, 6, 0, 0]}>
-                  {nameData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#000000' : '#444444'} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
+                <XAxis dataKey="group" stroke="#9a9a9a" fontSize={11} />
+                <YAxis stroke="#9a9a9a" fontSize={11} domain={[0, 100]} />
+                <Tooltip contentStyle={{ background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', borderRadius: '8px' }} />
+                <Bar dataKey="score" radius={[4, 4, 0, 0]}>
+                  {nameData.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill="#ffffff" />
                   ))}
                 </Bar>
               </BarChart>
@@ -176,95 +147,26 @@ export const FairnessReportView: React.FC<FairnessReportViewProps> = ({ auditDat
           </div>
         </div>
 
-        {/* University Prestige Tier Chart */}
-        <div style={{
-          backgroundColor: '#ffffff',
-          border: '1px solid #e4e4e7',
-          borderRadius: '16px',
-          padding: '24px'
-        }}>
-          <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>
-            Education Tier & Institution Score Impact
-          </h3>
-          <p style={{ fontSize: '12px', color: '#666', marginBottom: '20px' }}>
-            Score comparison across Research Univ vs State College vs Technical Institute vs Bootcamp
-          </p>
-          <div style={{ width: '100%', height: 260 }}>
-            <ResponsiveContainer>
+        <div className="fm-glass-card p-6 space-y-4">
+          <h3 className="text-sm font-semibold text-white">2. Institution Prestige Tier Perturbation</h3>
+          <p className="text-xs text-zinc-400">Evaluates score consistency across tier-1, tier-2, and unranked universities.</p>
+          <div className="h-60 w-full pt-2">
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart data={uniData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="tier" tick={{ fontSize: 11 }} angle={-10} textAnchor="end" />
-                <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(value: any) => [`${value} pts`, 'Avg Score']} />
-                <Bar dataKey="score" fill="#111111" radius={[6, 6, 0, 0]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
+                <XAxis dataKey="tier" stroke="#9a9a9a" fontSize={11} />
+                <YAxis stroke="#9a9a9a" fontSize={11} domain={[0, 100]} />
+                <Tooltip contentStyle={{ background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', borderRadius: '8px' }} />
+                <Bar dataKey="score" radius={[4, 4, 0, 0]}>
+                  {uniData.map((_, index) => (
+                    <Cell key={`cell-uni-${index}`} fill="#d8d8d8" />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
-
-      {/* 4. Detailed Audit Log Table */}
-      <div style={{
-        backgroundColor: '#ffffff',
-        border: '1px solid #e4e4e7',
-        borderRadius: '16px',
-        padding: '24px'
-      }}>
-        <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '16px' }}>
-          Counterfactual Audit Log Details
-        </h3>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', textAlign: 'left' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid #e4e4e7', color: '#666' }}>
-                <th style={{ padding: '10px' }}>Base Candidate</th>
-                <th style={{ padding: '10px' }}>Variant Type</th>
-                <th style={{ padding: '10px' }}>Group / Category</th>
-                <th style={{ padding: '10px' }}>Tested Variant Value</th>
-                <th style={{ padding: '10px', textAlign: 'right' }}>Predicted Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              {auditData.detailed_variants.slice(0, 15).map((row, idx) => (
-                <tr key={idx} style={{ borderBottom: '1px solid #f4f4f6' }}>
-                  <td style={{ padding: '10px', fontWeight: 500 }}>{row.base_candidate}</td>
-                  <td style={{ padding: '10px' }}>{row.variant_type}</td>
-                  <td style={{ padding: '10px' }}>{row.group}</td>
-                  <td style={{ padding: '10px', color: '#555' }}>{row.variant_val}</td>
-                  <td style={{ padding: '10px', textAlign: 'right', fontWeight: 600 }}>{row.score.toFixed(1)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
   );
 };
-
-const MetricCard: React.FC<{ label: string; value: string; subtext: string; status: 'good' | 'bad' | 'neutral' }> = ({
-  label, value, subtext, status
-}) => (
-  <div style={{
-    backgroundColor: '#ffffff',
-    border: '1px solid #e4e4e7',
-    borderRadius: '14px',
-    padding: '18px'
-  }}>
-    <div style={{ fontSize: '11px', fontWeight: 600, color: '#666', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-      {label}
-    </div>
-    <div style={{
-      fontSize: '26px',
-      fontWeight: 700,
-      margin: '6px 0',
-      color: status === 'bad' ? '#dc2626' : status === 'good' ? '#16a34a' : '#000000'
-    }}>
-      {value}
-    </div>
-    <div style={{ fontSize: '11px', color: '#777' }}>
-      {subtext}
-    </div>
-  </div>
-);
-

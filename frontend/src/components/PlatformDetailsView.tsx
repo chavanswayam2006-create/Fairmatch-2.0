@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, ShieldCheck, Target, Cpu, Users, Award, FileSearch, CheckCircle2, Sparkles } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, Target, Cpu, Users, Award, FileSearch, CheckCircle2, Sparkles, Scale, AlertTriangle } from 'lucide-react';
 
 interface PlatformDetailsViewProps {
   onBack: () => void;
@@ -8,259 +8,171 @@ interface PlatformDetailsViewProps {
 
 export const PlatformDetailsView: React.FC<PlatformDetailsViewProps> = ({ onBack, onOpenDashboard }) => {
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: '#ffffff',
-      color: '#09090b',
-      fontFamily: "'Inter', sans-serif",
-      paddingBottom: '80px'
-    }}>
-      {/* Sticky Header */}
-      <header style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid #e4e4e7',
-        padding: '16px 32px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button
-            onClick={onBack}
-            className="btn-outline"
-            style={{ padding: '6px 14px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '9999px', border: '1px solid #e4e4e7', background: '#ffffff', cursor: 'pointer' }}
-          >
-            <ArrowLeft size={14} /> Back
-          </button>
-          
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-              <rect x="6" y="8" width="16" height="8" rx="4" transform="rotate(-35 6 8)" fill="#000000" />
-              <rect x="12" y="14" width="16" height="8" rx="4" transform="rotate(-35 12 14)" fill="#000000" />
-            </svg>
-            {/* Platform Engine Reference - Plain Text Only */}
-            <span style={{ fontWeight: 700, fontSize: '18px', letterSpacing: '-0.02em', color: '#000000' }}>
-              FairMatch Analysis Platform
-            </span>
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-white/20 selection:text-white">
+      <div className="grain-overlay" />
+      <div className="hero-photo-bg" />
+
+      <div className="relative z-10">
+        {/* Sticky Header */}
+        <header className="sticky top-0 z-50 backdrop-blur-xl border-b border-zinc-900/80 bg-black/80">
+          <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div className="flex items-center gap-4">
+              <button onClick={onBack} className="btn-vesper btn-vesper-ghost h-8 px-3 text-xs">
+                <ArrowLeft size={13} className="mr-1.5" />
+                <span>Back</span>
+              </button>
+              <div className="h-4 w-px bg-zinc-800 hidden sm:block" />
+              <div className="flex items-center gap-2.5 hidden sm:flex">
+                <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24">
+                  <g transform="rotate(-30 12 12)">
+                    <circle cx="7.3" cy="3.2" r="1.45"/>
+                    <rect x="5.5" y="4.7" width="3.6" height="14.6" rx="1.8"/>
+                    <rect x="14.9" y="4.7" width="3.6" height="14.6" rx="1.8"/>
+                    <circle cx="16.7" cy="20.8" r="1.45"/>
+                  </g>
+                </svg>
+                <span className="font-semibold text-sm tracking-tight">FairMatch <span className="text-zinc-400 font-normal">Platform</span></span>
+              </div>
+            </div>
+            <button onClick={onOpenDashboard} className="btn-vesper btn-vesper-solid h-9 px-4 text-xs font-semibold">
+              Launch Dashboard →
+            </button>
           </div>
-        </div>
+        </header>
 
-        <button onClick={onOpenDashboard} className="btn-black" style={{ backgroundColor: '#000000', color: '#ffffff', border: 'none', borderRadius: '9999px', padding: '8px 18px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
-          Open Dashboard →
-        </button>
-      </header>
-
-      {/* Hero Header */}
-      <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '60px 24px 40px 24px' }}>
-        <div style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '8px',
-          backgroundColor: '#f4f4f6',
-          padding: '6px 16px',
-          borderRadius: '9999px',
-          fontSize: '12px',
-          fontWeight: 600,
-          color: '#333333',
-          marginBottom: '20px'
-        }}>
-          <ShieldCheck size={16} color="#16a34a" />
-          <span>Job-Specific Evidence Analysis (No Ranking or Numerical Scores)</span>
-        </div>
-
-        <h1 style={{
-          fontSize: 'clamp(2.2rem, 4.5vw, 3.8rem)',
-          fontWeight: 300,
-          letterSpacing: '-0.03em',
-          lineHeight: 1.1,
-          marginBottom: '24px',
-          color: '#000000'
-        }}>
-          Comprehensive Platform & <br />
-          Job Evidence Analysis System
-        </h1>
-
-        <p style={{
-          fontSize: '18px',
-          lineHeight: 1.6,
-          color: '#555555',
-          maxWidth: '820px'
-        }}>
-          FairMatch is a supportive, job-specific AI career assistant. It analyzes candidate resumes against specific job description requirements to highlight demonstrated strengths, identify missing evidence, and deliver actionable recommendations—without candidate rankings or arbitrary scores.
-        </p>
-      </section>
-
-      {/* Grid of Platform Details */}
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px', display: 'flex', flexDirection: 'column', gap: '48px' }}>
-        
-        {/* 1. Platform Overview */}
-        <div style={{
-          backgroundColor: '#fcfcfd',
-          border: '1px solid #e4e4e7',
-          borderRadius: '20px',
-          padding: '36px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-            <Cpu size={22} color="#000000" />
-            <h2 style={{ fontSize: '22px', fontWeight: 600 }}>1. Platform Overview</h2>
+        {/* Hero Section */}
+        <section className="max-w-6xl mx-auto px-6 pt-16 pb-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-300 mb-6">
+            <ShieldCheck size={14} className="text-emerald-400" />
+            <span>Job-Specific Evidence Analysis — No Ranking, No Black-Box Scores</span>
           </div>
-          <p style={{ fontSize: '15px', lineHeight: 1.7, color: '#444444' }}>
-            Traditional platforms treat resume screening as a competitive leaderboard or arbitrary score generator. FairMatch eliminates competitive ranking entirely. Instead, it parses both job descriptions and resumes to classify evidence strength across required skills, qualifications, and project outcomes.
+
+          <h1 className="text-4xl md:text-6xl font-light tracking-tight leading-[1.1] text-white mb-6 max-w-4xl">
+            Transparent AI Candidate Matching with{' '}
+            <em className="font-serif-italic not-italic font-normal text-zinc-400">evidence-based</em>{' '}
+            Fairness Auditing
+          </h1>
+
+          <p className="text-base text-zinc-400 max-w-2xl leading-relaxed mb-8">
+            FairMatch uses SHAP-explainability and counterfactual perturbation testing to provide transparent, actionable candidate-job fit analysis — without arbitrary rankings or protected attribute collection.
           </p>
-        </div>
 
-        {/* 2. Purpose & Principles */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e4e4e7', borderRadius: '18px', padding: '28px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-              <Target size={20} color="#16a34a" />
-              <h3 style={{ fontSize: '18px', fontWeight: 600 }}>Core Principles</h3>
-            </div>
-            <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#555555' }}>
-              <strong>“Your resume is being analyzed against the requirements of your selected job, not ranked against other candidates.”</strong> The evaluation is constructive, job-specific, and supportive.
-            </p>
-          </div>
-
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e4e4e7', borderRadius: '18px', padding: '28px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-              <Sparkles size={20} color="#2563eb" />
-              <h3 style={{ fontSize: '18px', fontWeight: 600 }}>Zero Demographic Bias</h3>
-            </div>
-            <p style={{ fontSize: '14px', lineHeight: 1.6, color: '#555555' }}>
-              Candidate names, university prestige tiers, formatting diacritics, age, gender, and protected characteristics have <strong>zero influence</strong> on evidence analysis.
-            </p>
-          </div>
-        </div>
-
-        {/* 3. Key Features & Global Taxonomies */}
-        <div style={{ backgroundColor: '#ffffff', border: '1px solid #e4e4e7', borderRadius: '20px', padding: '36px' }}>
-          <h2 style={{ fontSize: '22px', fontWeight: 600, marginBottom: '24px' }}>3. Key Features & Global Occupational Taxonomies</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-            <FeatureCard
-              title="ISCO-08 & ESCO Taxonomy Integration"
-              desc="Built upon ISCO-08 international classification and ESCO skills taxonomy covering occupations, unit groups, and multilingual terminology worldwide."
-            />
-            <FeatureCard
-              title="RAG Retrieval Architecture"
-              desc="Uses Retrieval-Augmented Generation to search occupational definitions, skill concepts, and benchmark databases before generating analysis."
-            />
-            <FeatureCard
-              title="Demonstrated vs. Mentioned Evidence"
-              desc="Distinguishes skills listed in isolation from skills demonstrated in work/projects, and identifies quantified metric impact."
-            />
-            <FeatureCard
-              title="Dual-Dimension Evaluation"
-              desc="Separates Resume Quality (clarity, structure, formatting) from Job Alignment (requirement coverage, domain fit) for complete transparency."
-            />
-            <FeatureCard
-              title="Zero False-Positive Skill Invention"
-              desc="Never invents skills or assumes candidate competence without explicit resume evidence."
-            />
-            <FeatureCard
-              title="Prioritized 4-Part Recommendations"
-              desc="Provides transparent guidance answering: What was found?, Why it matters?, Where is evidence?, and What to improve (with truthfulness guidance)."
-            />
-          </div>
-        </div>
-
-        {/* 4. How the Analysis Engine Works */}
-        <div style={{ backgroundColor: '#fcfcfd', border: '1px solid #e4e4e7', borderRadius: '20px', padding: '36px' }}>
-          <h2 style={{ fontSize: '22px', fontWeight: 600, marginBottom: '24px' }}>4. How the Universal Analysis Pipeline Works</h2>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
-            <StepBox step="1" title="Parse & Classify Job" text="Extract required skills, tools, and detect ISCO-08 group, ESCO taxonomy, and seniority level." />
-            <StepBox step="2" title="Parse Resume Sections" text="Extract demonstrated skills, work history, project details, degrees, and metric outcomes." />
-            <StepBox step="3" title="RAG Semantic Retrieval" text="Search knowledge graph and taxonomies for semantic equivalents (e.g. REST API -> FastAPI, Django)." />
-            <StepBox step="4" title="Requirement Evidence Matrix" text="Classify evidence level (Strong, Moderate, Limited, No Evidence) and source location." />
-            <StepBox step="5" title="Synthesize Report" text="Generate dual-dimension metrics, strengths, missing items, and prioritized 4-part improvement steps." />
-          </div>
-        </div>
-
-        {/* 5. Target Users & Benefits */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e4e4e7', borderRadius: '20px', padding: '32px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-              <Users size={22} color="#000000" />
-              <h3 style={{ fontSize: '20px', fontWeight: 600 }}>Target Users</h3>
-            </div>
-            <ul style={{ fontSize: '14px', lineHeight: 1.7, color: '#444444', paddingLeft: '20px' }}>
-              <li><strong>Job Candidates:</strong> Receive clear, constructive guidance on optimizing their resume for target positions.</li>
-              <li><strong>Career Coaches & Advisors:</strong> Help clients identify genuine skill gaps and evidence clarity.</li>
-              <li><strong>Hiring Managers & Recruiters:</strong> Objective requirement-by-requirement evidence validation.</li>
-            </ul>
-          </div>
-
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e4e4e7', borderRadius: '20px', padding: '32px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-              <Award size={22} color="#16a34a" />
-              <h3 style={{ fontSize: '20px', fontWeight: 600 }}>Key User Benefits</h3>
-            </div>
-            <ul style={{ fontSize: '14px', lineHeight: 1.7, color: '#444444', paddingLeft: '20px' }}>
-              <li><strong>Supportive Experience:</strong> Replaces stressful ranking leaderboards with constructive feedback.</li>
-              <li><strong>100% Transparent:</strong> Every recommendation explains what was found and why it matters.</li>
-              <li><strong>Job-Personalized:</strong> Different insights produced for different target job roles.</li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Bottom Call to Action */}
-        <div style={{
-          backgroundColor: '#000000',
-          color: '#ffffff',
-          borderRadius: '20px',
-          padding: '40px',
-          textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '16px'
-        }}>
-          <h2 style={{ fontSize: '26px', fontWeight: 400, letterSpacing: '-0.02em' }}>
-            Ready for supportive, job-specific resume analysis?
-          </h2>
-          <p style={{ fontSize: '14px', color: '#a1a1aa', maxWidth: '540px' }}>
-            Upload your resume and target job description to receive instant evidence matching, strengths analysis, and 4-part improvement steps.
-          </p>
           <button
             onClick={onOpenDashboard}
-            style={{
-              backgroundColor: '#ffffff',
-              color: '#000000',
-              border: 'none',
-              borderRadius: '9999px',
-              padding: '12px 28px',
-              fontSize: '14px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              marginTop: '8px'
-            }}
+            className="btn-vesper btn-vesper-solid h-11 px-6 text-sm font-semibold"
           >
-            Start Job Analysis →
+            <Sparkles size={15} className="mr-2" />
+            Try the Evidence Analyzer
           </button>
-        </div>
+        </section>
 
+        {/* Feature Pillars Grid */}
+        <section className="max-w-6xl mx-auto px-6 py-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              {
+                icon: <Target size={20} />,
+                title: 'Job-Specific Evidence Matching',
+                desc: 'Every match is evaluated purely against the specific job description you provide — not a generic model trained on historical hiring bias.',
+              },
+              {
+                icon: <Cpu size={20} />,
+                title: 'SHAP Explainability Engine',
+                desc: 'Per-candidate SHAP values break down every score contribution: skill overlap, semantic similarity, experience delta, and education level.',
+              },
+              {
+                icon: <ShieldCheck size={20} />,
+                title: 'Counterfactual Bias Audit Harness',
+                desc: 'Automated synthetic perturbation across name formats, university prestige tiers, and career gap representations — no protected attribute collection.',
+              },
+              {
+                icon: <Scale size={20} />,
+                title: 'No Arbitrary Candidate Rankings',
+                desc: 'FairMatch does not produce black-box percentile tables. Match outputs are structured evidence profiles, not opaque scores.',
+              },
+              {
+                icon: <FileSearch size={20} />,
+                title: 'Global O*NET Job Taxonomy',
+                desc: 'Integrated ISCO-08 occupation taxonomy browser with 1,000+ normalized job profiles for standardized requirement mapping.',
+              },
+              {
+                icon: <Award size={20} />,
+                title: 'Compliance-Ready Architecture',
+                desc: 'Built for HR teams under NYC Local Law 144, EU AI Act, and Fairlearn benchmarks. Audit logs are exportable as CSV compliance reports.',
+              },
+            ].map((item, i) => (
+              <div key={i} className="fm-glass-card p-6 space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-white">
+                  {item.icon}
+                </div>
+                <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ML Pipeline Architecture */}
+        <section className="max-w-6xl mx-auto px-6 py-10 border-t border-zinc-900">
+          <h2 className="text-2xl font-bold tracking-tight text-white mb-2">ML Pipeline Architecture</h2>
+          <p className="text-sm text-zinc-400 mb-8 max-w-2xl">
+            FairMatch's hybrid pipeline combines semantic embeddings, structured skill taxonomy matching, and XGBoost reranking to produce transparent, explainable match scores.
+          </p>
+
+          <div className="fm-glass-card p-6 overflow-x-auto">
+            <pre className="text-xs text-zinc-300 font-mono leading-relaxed whitespace-pre">{`Resume & JD Input
+       │
+       ├── Document Parser (PDF / DOCX / TXT)
+       │     ├── Text & Contact Extraction
+       │     ├── Skill Taxonomy Normalizer (Tech & Domain)
+       │     └── Years of Experience & Education Rank Classifier
+       │
+       ├── Feature Extraction Vector
+       │     ├── Semantic Cosine Similarity (SentenceTransformers)
+       │     ├── Jaccard Skill Overlap Ratio
+       │     ├── Weighted Skill Coverage Ratio
+       │     ├── Experience Match Delta Score
+       │     └── Education Level Rank Score
+       │
+       ├── XGBoost Re-Ranker Model (0–100 Match Score)
+       │
+       ├── SHAP Explainability Engine (Per-candidate Attribution)
+       │
+       └── Counterfactual Bias Audit Harness (Synthetic Perturbation & Fairlearn)`}</pre>
+          </div>
+        </section>
+
+        {/* Compliance & Fairness Disclosure */}
+        <section className="max-w-6xl mx-auto px-6 py-10 border-t border-zinc-900">
+          <div className="fm-glass-card p-6 border-amber-900/40 bg-amber-950/10 space-y-4">
+            <div className="flex items-center gap-2 text-amber-300 font-semibold">
+              <AlertTriangle size={18} />
+              <span>Synthetic Proxy Testing Disclaimer</span>
+            </div>
+            <div className="text-sm text-zinc-300 leading-relaxed space-y-3">
+              <p>The counterfactual bias detection module in FairMatch relies on <strong className="text-white">synthetic name and institution variants</strong> generated dynamically for audit testing purposes.</p>
+              <ul className="space-y-1.5 pl-4 border-l-2 border-zinc-700">
+                <li><span className="text-white font-medium">No Protected Attribute Collection:</span> FairMatch never collects, infers, or uses real demographic attributes (race, gender, age, disability) from actual candidate profiles.</li>
+                <li><span className="text-white font-medium">Synthetic Proxies as Benchmarks:</span> Name lists and university classifications represent statistical proxy benchmarks to test whether model feature weights accidentally penalize specific naming structures or prestige tiers.</li>
+                <li><span className="text-white font-medium">Human-in-the-Loop Requirement:</span> An audit flag indicates counterfactual score variations exceeded allowable thresholds, requiring HR compliance review under <strong className="text-white">NYC Local Law 144</strong> or the <strong className="text-white">EU AI Act</strong>. It does not constitute a legal determination.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Banner */}
+        <section className="max-w-6xl mx-auto px-6 py-12 border-t border-zinc-900">
+          <div className="fm-glass-card p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight text-white">Ready to run a fair candidate match?</h2>
+              <p className="text-sm text-zinc-400 mt-1">Upload a job description and resumes to generate a transparent SHAP-explainable evaluation in seconds.</p>
+            </div>
+            <button onClick={onOpenDashboard} className="btn-vesper btn-vesper-solid h-12 px-8 text-sm font-semibold shrink-0">
+              Launch Evidence Analyzer →
+            </button>
+          </div>
+        </section>
       </div>
     </div>
   );
 };
-
-const FeatureCard: React.FC<{ title: string; desc: string }> = ({ title, desc }) => (
-  <div style={{ backgroundColor: '#fafafa', border: '1px solid #f4f4f6', borderRadius: '14px', padding: '20px' }}>
-    <h4 style={{ fontSize: '15px', fontWeight: 600, color: '#000', marginBottom: '6px' }}>{title}</h4>
-    <p style={{ fontSize: '13px', color: '#666', lineHeight: 1.5, margin: 0 }}>{desc}</p>
-  </div>
-);
-
-const StepBox: React.FC<{ step: string; title: string; text: string }> = ({ step, title, text }) => (
-  <div style={{ backgroundColor: '#ffffff', border: '1px solid #e4e4e7', borderRadius: '14px', padding: '20px' }}>
-    <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#000000', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '13px', marginBottom: '12px' }}>
-      {step}
-    </div>
-    <h4 style={{ fontSize: '14px', fontWeight: 600, color: '#000', marginBottom: '4px' }}>{title}</h4>
-    <p style={{ fontSize: '12px', color: '#666', lineHeight: 1.5, margin: 0 }}>{text}</p>
-  </div>
-);
