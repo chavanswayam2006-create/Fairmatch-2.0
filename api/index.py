@@ -10,4 +10,7 @@ for p in [backend_dir, parent_dir]:
     if p not in sys.path and os.path.exists(p):
         sys.path.insert(0, p)
 
-from app.main import app
+try:
+    from app.main import app
+except ImportError:
+    from backend.app.main import app  # type: ignore
